@@ -171,6 +171,61 @@
           }
         }
       }
+    },
+    "ringface-bff": {
+      "root": "apps/ringface-bff",
+      "sourceRoot": "apps/ringface-bff/src",
+      "projectType": "application",
+      "prefix": "ringface-bff",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ringface-bff",
+            "main": "apps/ringface-bff/src/main.ts",
+            "tsConfig": "apps/ringface-bff/tsconfig.app.json",
+            "assets": ["apps/ringface-bff/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ringface-bff/src/environments/environment.ts",
+                  "with": "apps/ringface-bff/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ringface-bff:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ringface-bff/tsconfig.app.json",
+              "apps/ringface-bff/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/ringface-bff/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ringface-bff"],
+          "options": {
+            "jestConfig": "apps/ringface-bff/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
