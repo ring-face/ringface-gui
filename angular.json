@@ -74,8 +74,12 @@
               "apps/ringface-fe/src/favicon.ico",
               "apps/ringface-fe/src/assets"
             ],
-            "styles": ["apps/ringface-fe/src/styles.scss"],
-            "scripts": []
+            "styles": [
+              "apps/ringface-fe/src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
