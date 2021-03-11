@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DaysEventsComponent implements OnInit {
 
+  events = EVENTS;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -14,7 +16,7 @@ export class DaysEventsComponent implements OnInit {
 
 }
 
-const EVENTS =  [{
+const EVENTS: ProcessedEvent[] =  [{
   "id": 6937995083683256159,
   "createdAt": "20210310-120421",
   "answered": false,
@@ -30,5 +32,9 @@ const EVENTS =  [{
 }]
 
 interface ProcessedEvent{
-
+  id: number,
+  createdAt: string,
+  answered: boolean,
+  kind: string,
+  duration: number
 }
