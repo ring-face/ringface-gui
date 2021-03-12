@@ -78,8 +78,7 @@
               "apps/ringface-fe/src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": [
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -227,6 +226,32 @@
           "outputs": ["coverage/apps/ringface-bff"],
           "options": {
             "jestConfig": "apps/ringface-bff/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "data": {
+      "projectType": "library",
+      "root": "libs/data",
+      "sourceRoot": "libs/data/src",
+      "prefix": "ringface",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/data/tsconfig.lib.json",
+              "libs/data/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/data/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/data"],
+          "options": {
+            "jestConfig": "libs/data/jest.config.js",
             "passWithNoTests": true
           }
         }

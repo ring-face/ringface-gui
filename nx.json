@@ -18,6 +18,7 @@
   "projects": {
     "ringface-fe": { "tags": [] },
     "ringface-fe-e2e": { "tags": [], "implicitDependencies": ["ringface-fe"] },
-    "ringface-bff": { "tags": [] }
+    "ringface-bff": { "tags": [] },
+    "data": { "tags": [] }
   }
 }
