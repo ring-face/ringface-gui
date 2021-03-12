@@ -7,15 +7,20 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import { AccordionModule } from 'ngx-bootstrap/accordion'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DaysEventsComponent } from './days-events/days-events.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
-  declarations: [AppComponent, DaysEventsComponent],
+  declarations: [
+    AppComponent,
+    DaysEventsComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AlertModule.forRoot(),
     AccordionModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
