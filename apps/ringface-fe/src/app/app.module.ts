@@ -8,12 +8,14 @@ import { AccordionModule } from 'ngx-bootstrap/accordion'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DaysEventsComponent } from './days-events/days-events.component';
 import { HttpClientModule } from '@angular/common/http';
+import { WeeksEventsComponent } from './weeks-events/weeks-events.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    DaysEventsComponent
+    DaysEventsComponent,
+    WeeksEventsComponent
   ],
   imports: [
     BrowserModule,
