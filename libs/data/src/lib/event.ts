@@ -1,6 +1,6 @@
 export interface UnprocessedEvent {
   id: number,
-  createdAt: string,
+  createdAt: Date,
   answered: boolean,
   kind: string,
   duration: number

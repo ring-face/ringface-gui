@@ -1,6 +1,7 @@
 
 import * as express from 'express';
 import { readdirSync, readFileSync } from 'fs';
+import { UnprocessedEvent } from '@ringface/data';
 
 
 const app = express();
@@ -26,7 +27,7 @@ app.get('/api/unprocessed-events', (req, res) => {
       console.log(`reading event from ${eventFilePath}`)
       var jsonDataString = readFileSync(eventFilePath, 'utf8');
       return JSON.parse(jsonDataString);
-    })
+    }) as UnprocessedEvent[];
 
     res.send(events);
 })
