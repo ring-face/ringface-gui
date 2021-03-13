@@ -12,8 +12,8 @@ import { share } from 'rxjs/operators'
 })
 export class WeeksEventsComponent implements OnInit {
   MAX_DAYS = 7;
-  WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
-    'Friday', 'Saterday', 'Sunday'];
+  WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+    'Friday', 'Saturday'];
   days = [] as DaysData[];
 
 
@@ -21,15 +21,16 @@ export class WeeksEventsComponent implements OnInit {
   constructor(
     private httpClient: HttpClient
   ) {
-    const today = new Date();
+    const actDate = new Date();
 
     for(let i = 0; i < this.MAX_DAYS; i++) {
-      const newDate = new Date(today.setDate(today.getDate() - 1));
+      const newDate = new Date(actDate);
       this.days.push(
         {
           name:this.WEEKDAYS[newDate.getDay()],
           date: newDate}
       );
+      actDate.setDate(actDate.getDate() - 1);
     }
     this.days[0].name = "Today"
   }

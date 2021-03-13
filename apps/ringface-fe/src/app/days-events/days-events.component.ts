@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ProcessedEvent } from '@ringface/data';
+import { ProcessedEvent, UnprocessedEvent } from '@ringface/data';
 import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
@@ -22,6 +22,10 @@ export class DaysEventsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(`Init DaysEvents. Events type is observable: ${isObservable(this.events)}`)
+  }
+
+  processEvent(event:UnprocessedEvent){
+    console.log(`Will start processing event ${event.id}`);
   }
 
 }

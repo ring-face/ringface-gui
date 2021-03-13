@@ -1,10 +1,17 @@
-<p>days-events</p>
 <table class="table  table-hover">
   <tbody>
     <tr *ngFor="let event of events | async">
       <td>{{event.createdAt | date:'shortTime'}}  </td>
-      <td>Csaba, Reka</td>
-      <td>@mdo</td>
+      <td>{{event.duration}} sec</td>
+      <td>
+        <button
+          *ngIf="event.status == 'UNPROCESSED'"
+          type="button"
+          class="btn btn-primary"
+          (click)="processEvent(event)">
+          Process
+        </button>
+      </td>
     </tr>
 
   </tbody>

@@ -50,7 +50,9 @@ app.get('/api/unprocessed-events/:day', (req, res) => {
       const eventFilePath = eventDirPath + "/" + fileEnt.name;
       console.log(`reading event from ${eventFilePath}`)
       var jsonDataString = readFileSync(eventFilePath, 'utf8');
-      return JSON.parse(jsonDataString);
+      const unprocessedEvent = JSON.parse(jsonDataString);
+      unprocessedEvent.status = "UNPROCESSED";
+      return unprocessedEvent;
     }) as UnprocessedEvent[];
 
     res.send(events);

@@ -3,7 +3,8 @@ export interface UnprocessedEvent {
   createdAt: Date,
   answered: boolean,
   kind: string,
-  duration: number
+  duration: number,
+  status?: "UNPROCESSED" | "PROCESSED"
 }
 
 export interface ProcessedEvent extends UnprocessedEvent{
