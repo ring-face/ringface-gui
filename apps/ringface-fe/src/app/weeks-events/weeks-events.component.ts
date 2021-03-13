@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { UnprocessedEvent } from '@ringface/data';
 import { DaysData } from '../common/data-interfaces';
 import { share } from 'rxjs/operators'
+import { yyyymmdd } from '../common/utils'
 
 
 @Component({
@@ -37,29 +38,25 @@ export class WeeksEventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.days.forEach(daysData => {
-      daysData.events = this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
+      this.refreshDay(daysData);
 
-      // .subscribe(
-      //   eventList => {
-      //     console.log(`Got ${eventList} for ${daysData.name}`);
-      //     if (eventList){
-      //       daysData.events = eventList;
-
-      //     }
-      //   }
-      // );
     });
+  }
+
+  private refreshDay(daysData: DaysData) {
+    daysData.events = this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
+  }
+
+  onDownloadEventsFromRing(daysData: DaysData){
+    const dateToDownload = yyyymmdd(daysData.date);
+    console.log(`Trigger download of new ring events for ${dateToDownload}`)
+    this.httpClient.get(`/api/trigger-download-from-ring/${dateToDownload}`)
+      .subscribe(response => {
+        console.log(`Ring download finished with response ${response}, refreshing ${dateToDownload}`);
+        this.refreshDay(daysData);
+      });
   }
 
 }
 
-function yyyymmdd(date: Date) {
-  const mm = date.getMonth() + 1; // getMonth() is zero-based
-  const dd = date.getDate();
-
-  return [date.getFullYear(),
-          (mm>9 ? '' : '0') + mm,
-          (dd>9 ? '' : '0') + dd
-         ].join('');
-};
 
