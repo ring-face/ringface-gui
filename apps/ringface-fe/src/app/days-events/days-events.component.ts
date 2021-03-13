@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { UnprocessedEvent } from '@ringface/data';
+import { Component, Input, OnInit } from '@angular/core';
+import { DaysData } from '../common/data-interfaces';
 
 @Component({
   selector: 'ringface-days-events',
@@ -9,16 +8,21 @@ import { UnprocessedEvent } from '@ringface/data';
 })
 export class DaysEventsComponent implements OnInit {
 
-  events:UnprocessedEvent[];
+  @Input() daysData?: DaysData;
+
 
   constructor(
-    private httpClient:HttpClient
-  ) { }
+    // private httpClient:HttpClient
+  ) {
+    console.log('Constructed');
+
+  }
 
   ngOnInit(): void {
-    this.httpClient.get<UnprocessedEvent[]>('/api/unprocessed-events').subscribe(
-      eventList => this.events = eventList
-    );
+    console.log(`Init DaysEvents for ${this.daysData.name} and events ${this.daysData.events}`)
+    // this.httpClient.get<UnprocessedEvent[]>('/api/unprocessed-events').subscribe(
+    //   eventList => this.events = eventList
+    // );
   }
 
 }

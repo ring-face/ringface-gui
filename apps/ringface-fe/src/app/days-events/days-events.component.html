@@ -1,6 +1,7 @@
+<p>{{daysData.name}} details</p>
 <table class="table  table-hover">
   <tbody>
-    <tr *ngFor="let event of events">
+    <tr *ngFor="let event of daysData.events">
       <td>{{event.createdAt | date:'shortTime'}}  </td>
       <td>Csaba, Reka</td>
       <td>@mdo</td>

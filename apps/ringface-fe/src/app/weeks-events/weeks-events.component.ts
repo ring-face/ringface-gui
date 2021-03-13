@@ -1,13 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { UnprocessedEvent } from '@ringface/data';
+import { DaysData } from '../common/data-interfaces';
 
-
-interface DaysData {
-  name: string,
-  date: Date,
-  events: UnprocessedEvent[]
-}
 
 @Component({
   selector: 'ringface-weeks-events',
@@ -43,8 +38,11 @@ export class WeeksEventsComponent implements OnInit {
     this.days.forEach(daysData => {
       this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).subscribe(
         eventList => {
-          console.log(`Got ${eventList} for ${daysData.name}`)
-          daysData.events = eventList;
+          console.log(`Got ${eventList} for ${daysData.name}`);
+          if (eventList){
+            daysData.events = eventList;
+
+          }
         }
       );
     });
