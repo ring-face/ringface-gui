@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { UnprocessedEvent } from '@ringface/data';
+import { UnprocessedEvent,DownloadFromRingResponse } from '@ringface/data';
 import { DaysData } from '../common/data-interfaces';
 import { share } from 'rxjs/operators'
 import { yyyymmdd } from '../common/utils'
@@ -50,9 +50,9 @@ export class WeeksEventsComponent implements OnInit {
   onDownloadEventsFromRing(daysData: DaysData){
     const dateToDownload = yyyymmdd(daysData.date);
     console.log(`Trigger download of new ring events for ${dateToDownload}`)
-    this.httpClient.get(`/api/trigger-download-from-ring/${dateToDownload}`)
+    this.httpClient.get<DownloadFromRingResponse>(`/api/trigger-download-from-ring/${dateToDownload}`)
       .subscribe(response => {
-        console.log(`Ring download finished with response ${response}, refreshing ${dateToDownload}`);
+        console.log(`Ring download finished with ${response.eventCount} events, refreshing ${dateToDownload}`);
         this.refreshDay(daysData);
       });
   }

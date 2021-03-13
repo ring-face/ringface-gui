@@ -1,7 +1,7 @@
 
 import * as express from 'express';
 import { readdirSync, readFileSync } from 'fs';
-import { UnprocessedEvent } from '@ringface/data'
+import { UnprocessedEvent, DownloadFromRingResponse } from '@ringface/data'
 import { environment } from './environments/environment'
 
 const request = require('request');
@@ -19,11 +19,12 @@ app.get('/api/processed-events', (req, res) => {
 app.get('/api/trigger-download-from-ring/:day', (req, res) => {
   console.log(`Will download new ring events for ${req.params.day}`);
 
-  request(`${environment.ringConnectorBaseUrl}/conector/download/today`, function (error, response, body) {
+  request(`${environment.ringConnectorBaseUrl}/connector/download/${req.params.day}`, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       console.log("Response from backend. ", body);
       const responseArray = JSON.parse(body) as [];
-      res.send({eventCount:responseArray.length});
+      const response = { eventCount: responseArray.length } as DownloadFromRingResponse;
+      res.send(response);
 
     }
   });

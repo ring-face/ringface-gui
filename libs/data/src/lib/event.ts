@@ -10,3 +10,7 @@ export interface UnprocessedEvent {
 export interface ProcessedEvent extends UnprocessedEvent{
   persons: string[]
 }
+
+export interface DownloadFromRingResponse{
+  eventCount:number
+}
