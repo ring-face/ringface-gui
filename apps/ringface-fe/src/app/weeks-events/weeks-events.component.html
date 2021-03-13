@@ -1,6 +1,13 @@
 <accordion [isAnimated]="true">
-  <accordion-group *ngFor="let daysData of days" heading="{{daysData.name}} : {{daysData.events.length}} events">
-    <ringface-days-events [daysData] = [(daysData)] ></ringface-days-events>
+  <accordion-group *ngFor="let daysData of days" heading="{{daysData.name}} : {{(daysData.events | async)?.length}} events">
+    <div *ngIf="daysData.events | async; else loading">
+      <ringface-days-events [events] = daysData.events ></ringface-days-events>
+
+    </div>
+    <ng-template #loading>Loading events...</ng-template>
+
   </accordion-group>
+
+
 
 </accordion>

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { UnprocessedEvent } from '@ringface/data';
 import { DaysData } from '../common/data-interfaces';
+import { share } from 'rxjs/operators'
 
 
 @Component({
@@ -27,8 +28,7 @@ export class WeeksEventsComponent implements OnInit {
       this.days.push(
         {
           name:this.WEEKDAYS[newDate.getDay()],
-          date: newDate,
-          events:[] }
+          date: newDate}
       );
     }
     this.days[0].name = "Today"
@@ -36,15 +36,17 @@ export class WeeksEventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.days.forEach(daysData => {
-      this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).subscribe(
-        eventList => {
-          console.log(`Got ${eventList} for ${daysData.name}`);
-          if (eventList){
-            daysData.events = eventList;
+      daysData.events = this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
 
-          }
-        }
-      );
+      // .subscribe(
+      //   eventList => {
+      //     console.log(`Got ${eventList} for ${daysData.name}`);
+      //     if (eventList){
+      //       daysData.events = eventList;
+
+      //     }
+      //   }
+      // );
     });
   }
 

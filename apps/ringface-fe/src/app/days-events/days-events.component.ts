@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ProcessedEvent } from '@ringface/data';
+import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
+import { isObservable } from "rxjs";
+
 
 @Component({
   selector: 'ringface-days-events',
@@ -8,21 +12,16 @@ import { DaysData } from '../common/data-interfaces';
 })
 export class DaysEventsComponent implements OnInit {
 
-  @Input() daysData?: DaysData;
+  @Input() events: Observable<ProcessedEvent[]>;
 
 
   constructor(
-    // private httpClient:HttpClient
   ) {
-    console.log('Constructed');
 
   }
 
   ngOnInit(): void {
-    console.log(`Init DaysEvents for ${this.daysData.name} and events ${this.daysData.events}`)
-    // this.httpClient.get<UnprocessedEvent[]>('/api/unprocessed-events').subscribe(
-    //   eventList => this.events = eventList
-    // );
+    console.log(`Init DaysEvents. Events type is observable: ${isObservable(this.events)}`)
   }
 
 }
