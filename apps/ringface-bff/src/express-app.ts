@@ -1,18 +1,44 @@
 
 import * as express from 'express';
 import { readdirSync, readFileSync } from 'fs';
-import { UnprocessedEvent, DownloadFromRingResponse } from '@ringface/data'
+import { UnprocessedEvent, DownloadFromRingResponse, ProcessEventResponse } from '@ringface/data'
 import { environment } from './environments/environment'
 
 const request = require('request');
 
 export const app = express();
 
+app.use(express.json());
+
+
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to ringface-bff!' });
 });
 
 app.get('/api/processed-events', (req, res) => {
+
+})
+
+
+app.post('/api/process-event', (req, res) => {
+
+  console.log(`will start recognition on`, req.body);
+
+  var options = {
+    uri: `${environment.ringRecogniserBaseUrl}/recognition/local-video`,
+    method: 'POST',
+    json: req.body
+  };
+
+  request.post(options, function (error, response, backendResponse) {
+    if (!error && response.statusCode == 200) {
+      console.log("Response from backend. ", backendResponse);
+      // const backendResponse = JSON.parse(body);
+      const response = {...backendResponse} as ProcessEventResponse;
+      res.send(backendResponse);
+
+    }
+  });
 
 })
 

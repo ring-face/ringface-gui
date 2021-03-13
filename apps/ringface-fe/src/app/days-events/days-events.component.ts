@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ProcessedEvent, UnprocessedEvent } from '@ringface/data';
+import { ProcessedEvent, UnprocessedEvent, ProcessEventResponse } from '@ringface/data';
 import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'ringface-days-events',
@@ -16,6 +16,7 @@ export class DaysEventsComponent implements OnInit {
 
 
   constructor(
+    private httpClient: HttpClient
   ) {
 
   }
@@ -25,7 +26,12 @@ export class DaysEventsComponent implements OnInit {
   }
 
   processEvent(event:UnprocessedEvent){
-    console.log(`Will start processing event ${event.id}`);
+    console.log(`Will start processing event ${event.eventName}`);
+    this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
+    .subscribe( response => {
+      console.log(response);
+      // TODO: refres the day
+    });
   }
 
 }
