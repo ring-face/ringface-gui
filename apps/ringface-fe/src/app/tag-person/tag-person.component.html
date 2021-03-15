@@ -1,0 +1,6 @@
+<accordion [isAnimated]="true">
+  <accordion-group *ngFor="let unknownPerson of event.processingResult.unknownPersons" heading="{{unknownPerson.name}}">
+    <img *ngFor="let imagePath of unknownPerson.imagePaths" src="/api/images/{{imagePath}}" alt="Unknown person image">
+  </accordion-group>
+</accordion>
+

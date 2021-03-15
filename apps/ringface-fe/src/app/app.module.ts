@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { WeeksEventsComponent } from './weeks-events/weeks-events.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TagPersonComponent } from './tag-person/tag-person.component';
 
 
 
@@ -19,7 +20,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
   declarations: [
     AppComponent,
     DaysEventsComponent,
-    WeeksEventsComponent
+    WeeksEventsComponent,
+    TagPersonComponent
   ],
   imports: [
     BrowserModule,
