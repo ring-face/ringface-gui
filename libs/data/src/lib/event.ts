@@ -7,11 +7,19 @@ export interface UnprocessedEvent {
   duration: number,
   status: "UNPROCESSED" | "PROCESSED",
   videoFileName: string,
-
+  processingResult?:ProcessingResult
 }
 
-export interface ProcessedEvent extends UnprocessedEvent{
-  persons: string[]
+export interface ProcessingResult{
+  videoFile: string,
+  recognisedPersons: string[]
+  unknownPersons: UnknownPerson[]
+}
+
+export interface UnknownPerson{
+  name:string,
+  images: number,
+  imagePaths: string[]
 }
 
 export interface DownloadFromRingResponse{

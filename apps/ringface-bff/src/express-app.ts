@@ -1,7 +1,7 @@
 
 import * as express from 'express';
-import { readdirSync, readFileSync } from 'fs';
-import { UnprocessedEvent, DownloadFromRingResponse, ProcessEventResponse } from '@ringface/data'
+import { readdirSync, readFileSync, existsSync } from 'fs';
+import { UnprocessedEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult } from '@ringface/data'
 import { environment } from './environments/environment'
 
 const request = require('request');
@@ -75,10 +75,34 @@ app.get('/api/unprocessed-events/:day', (req, res) => {
       const eventFilePath = eventDirPath + "/" + fileEnt.name;
       console.log(`reading event from ${eventFilePath}`)
       var jsonDataString = readFileSync(eventFilePath, 'utf8');
-      const unprocessedEvent = JSON.parse(jsonDataString);
-      unprocessedEvent.status = "UNPROCESSED";
+      const unprocessedEvent = JSON.parse(jsonDataString) as UnprocessedEvent;
+
+      const processingResult = findProcessingResult(unprocessedEvent.eventName) as ProcessingResult;
+      if(processingResult){
+        unprocessedEvent.status = "PROCESSED";
+        unprocessedEvent.processingResult = processingResult;
+      } else {
+        unprocessedEvent.status = "UNPROCESSED";
+      }
+
       return unprocessedEvent;
     }) as UnprocessedEvent[];
 
     res.send(events);
 })
+
+function findProcessingResult(eventName:string):ProcessingResult{
+  const processedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/processed';
+  const eventDirPath = processedDir + "/" + eventName;
+
+if (existsSync(eventDirPath)) {
+
+    var jsonDataString = readFileSync(eventDirPath + "/processingResult.json", 'utf8');
+    const processingResult = JSON.parse(jsonDataString) as ProcessingResult;
+    return processingResult;
+
+} else {
+    return undefined;
+}
+
+}

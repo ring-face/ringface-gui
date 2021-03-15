@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ProcessedEvent, UnprocessedEvent, ProcessEventResponse } from '@ringface/data';
+import { UnprocessedEvent, ProcessEventResponse } from '@ringface/data';
 import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DaysEventsComponent implements OnInit {
 
-  @Input() events: Observable<ProcessedEvent[]>;
+  @Input() events: Observable<UnprocessedEvent[]>;
 
 
   constructor(
