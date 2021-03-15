@@ -3,7 +3,7 @@
 
 
     <div *ngIf="daysData.events | async; else loading">
-      <ringface-days-events [events] = daysData.events ></ringface-days-events>
+      <ringface-days-events [events] = daysData.events [date] = daysData.date></ringface-days-events>
 
     </div>
     <ng-template #loading>Loading events...</ng-template>

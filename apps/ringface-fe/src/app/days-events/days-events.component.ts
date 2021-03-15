@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
+import { EventService } from '../services/event-service.service';
 
 @Component({
   selector: 'ringface-days-events',
@@ -13,10 +14,12 @@ import { HttpClient } from '@angular/common/http';
 export class DaysEventsComponent implements OnInit {
 
   @Input() events: Observable<RingEvent[]>;
+  @Input() date:Date;
 
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private eventService: EventService
   ) {
 
   }
@@ -30,7 +33,7 @@ export class DaysEventsComponent implements OnInit {
     this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .subscribe( response => {
       console.log(response);
-      // TODO: refres the day
+      this.events = this.eventService.events(this.date);
     });
   }
 

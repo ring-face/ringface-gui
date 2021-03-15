@@ -1,9 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { RingEvent,DownloadFromRingResponse } from '@ringface/data';
 import { DaysData } from '../common/data-interfaces';
-import { share } from 'rxjs/operators'
-import { yyyymmdd } from '../common/utils'
+import { EventService } from '../services/event-service.service';
 
 
 @Component({
@@ -20,7 +17,7 @@ export class WeeksEventsComponent implements OnInit {
 
 
   constructor(
-    private httpClient: HttpClient
+    private eventService: EventService
   ) {
     const actDate = new Date();
 
@@ -44,15 +41,13 @@ export class WeeksEventsComponent implements OnInit {
   }
 
   private refreshDay(daysData: DaysData) {
-    daysData.events = this.httpClient.get<RingEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
+    daysData.events =  this.eventService.events(daysData.date);
   }
 
   onDownloadEventsFromRing(daysData: DaysData){
-    const dateToDownload = yyyymmdd(daysData.date);
-    console.log(`Trigger download of new ring events for ${dateToDownload}`)
-    this.httpClient.get<DownloadFromRingResponse>(`/api/trigger-download-from-ring/${dateToDownload}`)
+    this.eventService.triggerDownloadFromRing(daysData.date)
       .subscribe(response => {
-        console.log(`Ring download finished with ${response.eventCount} events, refreshing ${dateToDownload}`);
+        console.log(`Ring download finished with ${response.eventCount} events, refreshing ${daysData.date}`);
         this.refreshDay(daysData);
       });
   }
