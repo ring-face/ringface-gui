@@ -9,6 +9,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DaysEventsComponent } from './days-events/days-events.component';
 import { HttpClientModule } from '@angular/common/http';
 import { WeeksEventsComponent } from './weeks-events/weeks-events.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { ModalModule } from 'ngx-bootstrap/modal';
+
+
 
 
 @NgModule({
@@ -22,6 +26,8 @@ import { WeeksEventsComponent } from './weeks-events/weeks-events.component';
     BrowserAnimationsModule,
     AlertModule.forRoot(),
     AccordionModule.forRoot(),
+    CarouselModule.forRoot(),
+    ModalModule.forRoot(),
     HttpClientModule
   ],
   providers: [],

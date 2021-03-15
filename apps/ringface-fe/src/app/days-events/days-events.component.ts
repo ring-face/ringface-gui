@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { RingEvent, ProcessEventResponse } from '@ringface/data';
 import { Observable } from 'rxjs';
-import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { EventService } from '../services/event-service.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'ringface-days-events',
@@ -16,10 +16,15 @@ export class DaysEventsComponent implements OnInit {
   @Input() events: Observable<RingEvent[]>;
   @Input() date:Date;
 
+  tagPersonModal: BsModalRef;
+  selectedEvent: RingEvent;
+
+
 
   constructor(
     private httpClient: HttpClient,
-    private eventService: EventService
+    private eventService: EventService,
+    private modalService: BsModalService
   ) {
 
   }
@@ -28,13 +33,18 @@ export class DaysEventsComponent implements OnInit {
     console.log(`Init DaysEvents. Events type is observable: ${isObservable(this.events)}`)
   }
 
-  processEvent(event:RingEvent){
+  onProcessEvent(event:RingEvent){
     console.log(`Will start processing event ${event.eventName}`);
     this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .subscribe( response => {
       console.log(response);
       this.events = this.eventService.events(this.date);
     });
+  }
+
+  onTagPerson(event:RingEvent, template: TemplateRef<any>){
+    this.selectedEvent = event;
+    this.tagPersonModal = this.modalService.show(template);
   }
 
 }

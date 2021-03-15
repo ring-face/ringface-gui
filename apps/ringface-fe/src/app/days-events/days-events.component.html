@@ -1,18 +1,56 @@
-<table class="table  table-hover">
+<table class="table table-hover">
   <tbody>
-    <tr *ngFor="let event of events | async">
-      <td>{{event.createdAt | date:'shortTime'}}  </td>
-      <td>{{event.duration}} sec</td>
-      <td>
-        <button
-          *ngIf="event.status == 'UNPROCESSED'"
-          type="button"
-          class="btn btn-primary"
-          (click)="processEvent(event)">
-          Process
-        </button>
+    <tr *ngFor="let event of events | async"class="d-flex" >
+      <td class="col-3"> {{ event.createdAt | date: 'shortTime' }}</td>
+      <td class="col-5">
+        {{ event.processingResult?.recognisedPersons }}
+        <!-- <ul *ngFor="let unknownPerson of event.processingResult.unknownPersons">
+          <li>{{ unknownPerson.name }}</li>
+        </ul> -->
+        <!-- <carousel>
+          <slide>
+            <img src="assets/1.jpeg" alt="first slide" style="display: block; width: 100%;">
+          </slide>
+          <slide>
+            <img src="assets/2.jpeg" alt="second slide" style="display: block; width: 100%;">
+          </slide>
+          <slide>
+            <img src="assets/3.jpeg" alt="third slide" style="display: block; width: 100%;">
+          </slide>
+        </carousel> -->
+      </td>
+      <td class="col-4">
+        <ng-container *ngIf="event.status == 'UNPROCESSED'">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="onProcessEvent(event)"
+          >
+            Recognise
+          </button>
+        </ng-container>
+        <ng-container *ngIf="event.status == 'PROCESSED' && event.processingResult.unknownPersons.length > 0">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onTagPerson(event, template)"
+          >
+            Tag {{event.processingResult.unknownPersons.length}} Person
+          </button>
+        </ng-container>
       </td>
     </tr>
-
   </tbody>
 </table>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Tag Unknown Person</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="tagPersonModal.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Unknown images will go in here
+  </div>
+</ng-template>
