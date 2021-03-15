@@ -1,7 +1,7 @@
 
 import * as express from 'express';
 import { readdirSync, readFileSync, existsSync } from 'fs';
-import { UnprocessedEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult } from '@ringface/data'
+import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult } from '@ringface/data'
 import { environment } from './environments/environment'
 
 const request = require('request');
@@ -75,7 +75,7 @@ app.get('/api/unprocessed-events/:day', (req, res) => {
       const eventFilePath = eventDirPath + "/" + fileEnt.name;
       console.log(`reading event from ${eventFilePath}`)
       var jsonDataString = readFileSync(eventFilePath, 'utf8');
-      const unprocessedEvent = JSON.parse(jsonDataString) as UnprocessedEvent;
+      const unprocessedEvent = JSON.parse(jsonDataString) as RingEvent;
 
       const processingResult = findProcessingResult(unprocessedEvent.eventName) as ProcessingResult;
       if(processingResult){
@@ -86,7 +86,7 @@ app.get('/api/unprocessed-events/:day', (req, res) => {
       }
 
       return unprocessedEvent;
-    }) as UnprocessedEvent[];
+    }) as RingEvent[];
 
     res.send(events);
 })

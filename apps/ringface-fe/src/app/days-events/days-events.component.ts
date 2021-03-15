@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UnprocessedEvent, ProcessEventResponse } from '@ringface/data';
+import { RingEvent, ProcessEventResponse } from '@ringface/data';
 import { Observable } from 'rxjs';
 import { DaysData } from '../common/data-interfaces';
 import { isObservable } from "rxjs";
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DaysEventsComponent implements OnInit {
 
-  @Input() events: Observable<UnprocessedEvent[]>;
+  @Input() events: Observable<RingEvent[]>;
 
 
   constructor(
@@ -25,7 +25,7 @@ export class DaysEventsComponent implements OnInit {
     console.log(`Init DaysEvents. Events type is observable: ${isObservable(this.events)}`)
   }
 
-  processEvent(event:UnprocessedEvent){
+  processEvent(event:RingEvent){
     console.log(`Will start processing event ${event.eventName}`);
     this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .subscribe( response => {

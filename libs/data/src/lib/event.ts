@@ -1,4 +1,4 @@
-export interface UnprocessedEvent {
+export interface RingEvent {
   eventName: string,
   id: number,
   createdAt: Date,

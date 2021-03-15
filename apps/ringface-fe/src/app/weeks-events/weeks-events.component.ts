@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { UnprocessedEvent,DownloadFromRingResponse } from '@ringface/data';
+import { RingEvent,DownloadFromRingResponse } from '@ringface/data';
 import { DaysData } from '../common/data-interfaces';
 import { share } from 'rxjs/operators'
 import { yyyymmdd } from '../common/utils'
@@ -44,7 +44,7 @@ export class WeeksEventsComponent implements OnInit {
   }
 
   private refreshDay(daysData: DaysData) {
-    daysData.events = this.httpClient.get<UnprocessedEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
+    daysData.events = this.httpClient.get<RingEvent[]>(`/api/unprocessed-events/${yyyymmdd(daysData.date)}`).pipe(share());
   }
 
   onDownloadEventsFromRing(daysData: DaysData){
