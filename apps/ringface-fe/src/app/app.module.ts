@@ -12,6 +12,7 @@ import { WeeksEventsComponent } from './weeks-events/weeks-events.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TagPersonComponent } from './tag-person/tag-person.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -30,7 +31,8 @@ import { TagPersonComponent } from './tag-person/tag-person.component';
     AccordionModule.forRoot(),
     CarouselModule.forRoot(),
     ModalModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],
