@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DaysData } from '../common/data-interfaces';
-import { EventService } from '../services/event-service.service';
+import { BffService } from '../services/bff.service';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class WeeksEventsComponent implements OnInit {
 
 
   constructor(
-    private eventService: EventService
+    private bffService: BffService
   ) {
     const actDate = new Date();
 
@@ -41,11 +41,11 @@ export class WeeksEventsComponent implements OnInit {
   }
 
   private refreshDay(daysData: DaysData) {
-    daysData.events =  this.eventService.events(daysData.date);
+    daysData.events =  this.bffService.events(daysData.date);
   }
 
   onDownloadEventsFromRing(daysData: DaysData){
-    this.eventService.triggerDownloadFromRing(daysData.date)
+    this.bffService.triggerDownloadFromRing(daysData.date)
       .subscribe(response => {
         console.log(`Ring download finished with ${response.eventCount} events, refreshing ${daysData.date}`);
         this.refreshDay(daysData);

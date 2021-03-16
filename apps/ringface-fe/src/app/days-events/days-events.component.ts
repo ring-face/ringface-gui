@@ -3,7 +3,7 @@ import { RingEvent, ProcessEventResponse } from '@ringface/data';
 import { Observable } from 'rxjs';
 import { isObservable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
-import { EventService } from '../services/event-service.service';
+import { BffService } from '../services/bff.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
@@ -23,7 +23,7 @@ export class DaysEventsComponent implements OnInit {
 
   constructor(
     private httpClient: HttpClient,
-    private eventService: EventService,
+    private bffService: BffService,
     private modalService: BsModalService
   ) {
 
@@ -38,7 +38,7 @@ export class DaysEventsComponent implements OnInit {
     this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .subscribe( response => {
       console.log(response);
-      this.events = this.eventService.events(this.date);
+      this.events = this.bffService.events(this.date);
     });
   }
 

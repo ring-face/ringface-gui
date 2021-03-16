@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RingEvent, UnknownPerson } from '@ringface/data';
-import { EventService } from '../services/event-service.service';
+import { BffService } from '../services/bff.service';
 
 @Component({
   selector: 'ringface-tag-person',
@@ -15,11 +15,11 @@ export class TagPersonComponent implements OnInit {
   ]
 
   constructor(
-    private eventService: EventService
+    private bffService: BffService
   ) { }
 
   ngOnInit(): void {
-    this.eventService.mostRecentFitting().subscribe(fittingResult => {
+    this.bffService.mostRecentFitting().subscribe(fittingResult => {
       console.log(`fitting result retrieved`, fittingResult);
       this.knownPersons = Object.keys(fittingResult.persons);
     });

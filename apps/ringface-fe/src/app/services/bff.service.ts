@@ -9,7 +9,7 @@ import { share } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class EventService {
+export class BffService {
 
   constructor(
     private httpClient: HttpClient
