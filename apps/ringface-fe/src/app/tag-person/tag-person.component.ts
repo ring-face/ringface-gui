@@ -10,6 +10,7 @@ import { BffService } from '../services/bff.service';
 export class TagPersonComponent implements OnInit {
 
   @Input() event: RingEvent;
+  newName:string;
   knownPersons :string[]=[
     "initialising",
   ]
@@ -26,7 +27,10 @@ export class TagPersonComponent implements OnInit {
   }
 
   onTag(unknownPerson: UnknownPerson){
-    console.log(`Unknown person tagged to ${unknownPerson.name}`);
+    console.log(`Unknown person will be tagged as ${this.newName}`);
+    this.bffService.tagPerson(this.event.eventName, unknownPerson, this.newName).subscribe(response =>{
+      unknownPerson.name = this.newName;
+    });
   }
 
 }

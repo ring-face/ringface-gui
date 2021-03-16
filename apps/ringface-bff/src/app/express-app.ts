@@ -1,7 +1,7 @@
 
 import * as express from 'express';
 import * as fs from 'fs';
-import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult} from '@ringface/data'
+import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest} from '@ringface/data'
 import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
@@ -130,3 +130,9 @@ function loadMostRecentFitting() {
 
   return recentFitting;
 }
+
+app.post('/api/tag-person', (req, res) => {
+  const tagPersonRequest: TagPersonRequest = req.body;
+  console.log('Tagging: ', tagPersonRequest);
+  res.send({message:`Tagged to ${tagPersonRequest.newName}`});
+});
