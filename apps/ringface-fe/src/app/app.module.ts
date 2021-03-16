@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { AccordionModule } from 'ngx-bootstrap/accordion'
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DaysEventsComponent } from './days-events/days-events.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,6 +33,7 @@ import { FormsModule } from '@angular/forms';
     AccordionModule.forRoot(),
     CarouselModule.forRoot(),
     ModalModule.forRoot(),
+    TypeaheadModule.forRoot(),
     HttpClientModule,
     FormsModule
   ],

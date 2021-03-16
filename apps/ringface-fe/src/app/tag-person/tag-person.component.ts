@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RingEvent } from '@ringface/data';
+import { EventService } from '../services/event-service.service';
 
 @Component({
   selector: 'ringface-tag-person',
@@ -9,10 +10,19 @@ import { RingEvent } from '@ringface/data';
 export class TagPersonComponent implements OnInit {
 
   @Input() event: RingEvent;
+  knownPersons :string[]=[
+    "initialising",
+  ]
 
-  constructor() { }
+  constructor(
+    private eventService: EventService
+  ) { }
 
   ngOnInit(): void {
+    this.eventService.mostRecentFitting().subscribe(fittingResult => {
+      console.log(`fitting result retrieved`, fittingResult);
+      this.knownPersons = Object.keys(fittingResult.persons);
+    });
   }
 
 }

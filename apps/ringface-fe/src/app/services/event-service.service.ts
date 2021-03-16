@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RingEvent,DownloadFromRingResponse } from '@ringface/data';
+import { RingEvent,DownloadFromRingResponse, FittingResult } from '@ringface/data';
 import { yyyymmdd } from '../common/utils'
 import { share } from 'rxjs/operators';
 
@@ -22,7 +22,11 @@ export class EventService {
   }
 
   public events(date: Date) {
-    return this.httpClient.get<RingEvent[]>(`/api/unprocessed-events/${yyyymmdd(date)}`).pipe(share());
+    return this.httpClient.get<RingEvent[]>(`/api/events/${yyyymmdd(date)}`).pipe(share());
+  }
+
+  public mostRecentFitting() {
+    return this.httpClient.get<FittingResult>('/api/most-recent-fitting/');
   }
 
 }

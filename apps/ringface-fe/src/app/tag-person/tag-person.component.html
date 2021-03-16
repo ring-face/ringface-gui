@@ -4,7 +4,10 @@
       <div class="row">
         <div class="col">
             <label for="name">Name: </label>
-            <input id="name" [(ngModel)]="unknownPerson.name" placeholder="{{unknownPerson.name}}">
+            <input id="name"
+              [(ngModel)]="unknownPerson.name"
+              [typeahead]="knownPersons"
+              placeholder="{{unknownPerson.name}}">
         </div>
       </div>
       <div class="row">

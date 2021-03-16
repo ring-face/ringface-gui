@@ -8,5 +8,6 @@ export const dirStructure = {
   dataDir: process.env.DATA_DIR,
   unprocessedDir: `${process.env.DATA_DIR}/events/unprocessed`,
   processedDir: `${process.env.DATA_DIR}/events/processed`,
+  classifier: `${process.env.DATA_DIR}/classifier`,
 
 }

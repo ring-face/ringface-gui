@@ -1,8 +1,10 @@
 
 import * as express from 'express';
-import { readdirSync, readFileSync, existsSync } from 'fs';
-import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult } from '@ringface/data'
+import * as fs from 'fs';
+import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult} from '@ringface/data'
 import { environment, dirStructure } from '../environments/environment'
+import * as path from 'path';
+import * as glob from 'glob';
 
 const request = require('request');
 
@@ -57,21 +59,20 @@ app.get('/api/trigger-download-from-ring/:day', (req, res) => {
 /**
  * day param of format yyyymmdd
  */
-app.get('/api/unprocessed-events/:day', (req, res) => {
-  // const unprocessedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/unprocessed';
+app.get('/api/events/:day', (req, res) => {
 
   console.log(`Requesting data for ${req.params.day}`);
 
-  const events = readdirSync(dirStructure.unprocessedDir, { withFileTypes: true })
+  const events = fs.readdirSync(dirStructure.unprocessedDir, { withFileTypes: true })
 
     .filter(eventDir => eventDir.isDirectory() && eventDir.name.startsWith(req.params.day))
     .map(eventDir => {
       const eventDirPath = dirStructure.unprocessedDir + "/" + eventDir.name;
-      const fileEnt = readdirSync(eventDirPath, { withFileTypes: true })
+      const fileEnt = fs.readdirSync(eventDirPath, { withFileTypes: true })
         .find(file => file.name.endsWith("json"));
       const eventFilePath = eventDirPath + "/" + fileEnt.name;
       console.log(`reading event from ${eventFilePath}`)
-      var jsonDataString = readFileSync(eventFilePath, 'utf8');
+      var jsonDataString = fs.readFileSync(eventFilePath, 'utf8');
       const unprocessedEvent = JSON.parse(jsonDataString) as RingEvent;
 
       const processingResult = findProcessingResult(unprocessedEvent.eventName) as ProcessingResult;
@@ -95,13 +96,16 @@ app.get('/api/images/*', (req, res) => {
   res.sendFile(baseDir + imagePath);
 });
 
+app.get('/api/most-recent-fitting/', (req, res) => {
+  res.send(loadMostRecentFitting());
+});
+
 function findProcessingResult(eventName:string):ProcessingResult{
-  // const processedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/processed';
   const eventDirPath = dirStructure.processedDir + "/" + eventName;
 
-  if (existsSync(eventDirPath)) {
+  if (fs.existsSync(eventDirPath)) {
 
-      var jsonDataString = readFileSync(eventDirPath + "/processingResult.json", 'utf8');
+      var jsonDataString = fs.readFileSync(eventDirPath + "/processingResult.json", 'utf8');
       const processingResult = JSON.parse(jsonDataString) as ProcessingResult;
       return processingResult;
 
@@ -109,4 +113,20 @@ function findProcessingResult(eventName:string):ProcessingResult{
       return undefined;
   }
 
+}
+
+function loadMostRecentFitting() {
+
+  const recentFittingJson = glob.sync(dirStructure.classifier + "/*.json").reduce((last, current) => {
+
+      let currentFileDate = new Date(fs.statSync(current).mtime);
+      let lastFileDate = new Date(fs.statSync(last).mtime);
+
+      return ( currentFileDate.getTime() > lastFileDate.getTime() ) ? current: last;
+  });
+
+  var jsonDataString = fs.readFileSync(recentFittingJson, 'utf8');
+  const recentFitting = JSON.parse(jsonDataString) as FittingResult;
+
+  return recentFitting;
 }

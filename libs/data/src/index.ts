@@ -1,2 +1,2 @@
 // export * from './lib/data.module';
-export * from './lib/event'
+export * from './lib/interfaces'
