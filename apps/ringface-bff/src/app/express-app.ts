@@ -2,7 +2,7 @@
 import * as express from 'express';
 import { readdirSync, readFileSync, existsSync } from 'fs';
 import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult } from '@ringface/data'
-import { environment } from './environments/environment'
+import { environment, dirStructure } from '../environments/environment'
 
 const request = require('request');
 
@@ -15,9 +15,6 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to ringface-bff!' });
 });
 
-app.get('/api/processed-events', (req, res) => {
-
-})
 
 
 app.post('/api/process-event', (req, res) => {
@@ -61,15 +58,15 @@ app.get('/api/trigger-download-from-ring/:day', (req, res) => {
  * day param of format yyyymmdd
  */
 app.get('/api/unprocessed-events/:day', (req, res) => {
-  const unprocessedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/unprocessed';
+  // const unprocessedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/unprocessed';
 
   console.log(`Requesting data for ${req.params.day}`);
 
-  const events = readdirSync(unprocessedDir, { withFileTypes: true })
+  const events = readdirSync(dirStructure.unprocessedDir, { withFileTypes: true })
 
     .filter(eventDir => eventDir.isDirectory() && eventDir.name.startsWith(req.params.day))
     .map(eventDir => {
-      const eventDirPath = unprocessedDir + "/" + eventDir.name;
+      const eventDirPath = dirStructure.unprocessedDir + "/" + eventDir.name;
       const fileEnt = readdirSync(eventDirPath, { withFileTypes: true })
         .find(file => file.name.endsWith("json"));
       const eventFilePath = eventDirPath + "/" + fileEnt.name;
@@ -99,17 +96,17 @@ app.get('/api/images/*', (req, res) => {
 });
 
 function findProcessingResult(eventName:string):ProcessingResult{
-  const processedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/processed';
-  const eventDirPath = processedDir + "/" + eventName;
+  // const processedDir = '/Users/csaba/dev_ring/repo/ring-connector/data/events/processed';
+  const eventDirPath = dirStructure.processedDir + "/" + eventName;
 
-if (existsSync(eventDirPath)) {
+  if (existsSync(eventDirPath)) {
 
-    var jsonDataString = readFileSync(eventDirPath + "/processingResult.json", 'utf8');
-    const processingResult = JSON.parse(jsonDataString) as ProcessingResult;
-    return processingResult;
+      var jsonDataString = readFileSync(eventDirPath + "/processingResult.json", 'utf8');
+      const processingResult = JSON.parse(jsonDataString) as ProcessingResult;
+      return processingResult;
 
-} else {
-    return undefined;
-}
+  } else {
+      return undefined;
+  }
 
 }
