@@ -1,6 +1,22 @@
 <accordion [isAnimated]="true">
   <accordion-group *ngFor="let unknownPerson of event.processingResult.unknownPersons" heading="{{unknownPerson.name}}">
-    <img *ngFor="let imagePath of unknownPerson.imagePaths" src="/api/images/{{imagePath}}" alt="Unknown person image">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+            <label for="name">Name: </label>
+            <input id="name" [(ngModel)]="unknownPerson.name" placeholder="{{unknownPerson.name}}">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm" *ngFor="let imagePath of unknownPerson.imagePaths | slice:0:6">
+          <img src="/api/images/{{imagePath}}"
+          alt="Image of {{unknownPerson.name}}"
+          title="Image of {{unknownPerson.name}}"
+          class="unknownPersonImage"
+          >
+        </div>
+      </div>
+    </div>
   </accordion-group>
 </accordion>
 

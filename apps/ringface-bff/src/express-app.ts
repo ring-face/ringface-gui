@@ -91,10 +91,11 @@ app.get('/api/unprocessed-events/:day', (req, res) => {
     res.send(events);
 })
 
-app.get('/\/api\/images\/.*/', (req, res) => {
-    const imagePath = req.params.imagepath;
-    console.log(`getting image ${imagePath}`);
-    res.sendFile(imagePath);
+app.get('/api/images/*', (req, res) => {
+  const imagePath = req.path.substring(12);
+  const baseDir = '/Users/csaba/dev_ring/repo/ring-connector/';
+  console.log(`getting image ${imagePath}`);
+  res.sendFile(baseDir + imagePath);
 });
 
 function findProcessingResult(eventName:string):ProcessingResult{
