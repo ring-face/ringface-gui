@@ -1,25 +1,44 @@
 <accordion [isAnimated]="true">
-  <accordion-group *ngFor="let unknownPerson of event.processingResult.unknownPersons" heading="{{unknownPerson.name}}">
+  <accordion-group
+    *ngFor="let unknownPerson of event.processingResult.unknownPersons"
+    heading="{{ unknownPerson.name }}"
+  >
     <div class="container">
       <div class="row">
         <div class="col">
-            <label for="name">Name: </label>
-            <input id="name"
-              [(ngModel)]="unknownPerson.name"
-              [typeahead]="knownPersons"
-              placeholder="{{unknownPerson.name}}">
+          <label for="name">Name: </label>
+        </div>
+        <div class="col">
+          <input
+            id="name"
+            [(ngModel)]="unknownPerson.name"
+            [typeahead]="knownPersons"
+            placeholder="{{ unknownPerson.name }}"
+          />
+        </div>
+        <div class="col">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onTag(unknownPerson)"
+          >
+            Tag
+          </button>
         </div>
       </div>
       <div class="row">
-        <div class="col-sm" *ngFor="let imagePath of unknownPerson.imagePaths | slice:0:6">
-          <img src="/api/images/{{imagePath}}"
-          alt="Image of {{unknownPerson.name}}"
-          title="Image of {{unknownPerson.name}}"
-          class="unknownPersonImage"
-          >
+        <div
+          class="col-sm"
+          *ngFor="let imagePath of unknownPerson.imagePaths | slice: 0:6"
+        >
+          <img
+            src="/api/images/{{ imagePath }}"
+            alt="Image of {{ unknownPerson.name }}"
+            title="Image of {{ unknownPerson.name }}"
+            class="unknownPersonImage"
+          />
         </div>
       </div>
     </div>
   </accordion-group>
 </accordion>
-
