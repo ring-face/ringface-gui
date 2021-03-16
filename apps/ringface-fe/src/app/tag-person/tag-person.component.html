@@ -21,6 +21,7 @@
             type="button"
             class="btn btn-secondary"
             (click)="onTag(unknownPerson)"
+            [disabled] = "buttonDisabled"
           >
             Tag
           </button>

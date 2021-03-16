@@ -5,6 +5,7 @@ import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingRe
 import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
+import { triggerClassification } from './classifier-service';
 
 const request = require('request');
 
@@ -134,5 +135,24 @@ function loadMostRecentFitting() {
 app.post('/api/tag-person', (req, res) => {
   const tagPersonRequest: TagPersonRequest = req.body;
   console.log('Tagging: ', tagPersonRequest);
+
+  const sourceDir = dirStructure.processedDir + "/" +tagPersonRequest.eventName + "/" + tagPersonRequest.unknownPerson.name;
+  const targetDir = dirStructure.imagesDir + "/" + tagPersonRequest.newName;
+
+  if (fs.existsSync(targetDir)){
+    console.log(`will add to existing person`)
+    glob.sync(sourceDir + "/new-images/*.jpeg").forEach(imageFilePath => {
+      const imageFileName = imageFilePath.substring(imageFilePath.lastIndexOf('/') + 1);
+
+      fs.renameSync(imageFilePath, targetDir + "/new-images/" + imageFileName)
+    });
+
+  } else {
+    console.log(`will add as new person`);
+    fs.renameSync(sourceDir, targetDir);
+  }
+
+  triggerClassification();
+
   res.send({message:`Tagged to ${tagPersonRequest.newName}`});
 });

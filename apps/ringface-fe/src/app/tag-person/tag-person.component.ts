@@ -14,6 +14,7 @@ export class TagPersonComponent implements OnInit {
   knownPersons :string[]=[
     "initialising",
   ]
+  buttonDisabled = false;
 
   constructor(
     private bffService: BffService
@@ -30,6 +31,7 @@ export class TagPersonComponent implements OnInit {
     console.log(`Unknown person will be tagged as ${this.newName}`);
     this.bffService.tagPerson(this.event.eventName, unknownPerson, this.newName).subscribe(response =>{
       unknownPerson.name = this.newName;
+      this.buttonDisabled = true;
     });
   }
 
