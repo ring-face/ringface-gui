@@ -3,9 +3,10 @@ import {MongoClient, Db} from 'mongodb';
 const mongoUrl = buildMongoUrl();
 export var db:Db;
 
+
 export enum CollectionName {
   ClassificationResult = "ClassificationResult",
-
+  RingEvent = "RingEvent"
 }
 MongoClient.connect(mongoUrl).then(
   mongoClient => {
@@ -29,4 +30,8 @@ function buildMongoUrl(){
 
 export async function saveToDb(collectionName:CollectionName, obj:any){
   await db.collection(collectionName).insertOne(obj)
+}
+
+export async function saveListToDb(collectionName:CollectionName, obj:any[]){
+  await db.collection(collectionName).insertMany(obj)
 }

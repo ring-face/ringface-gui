@@ -6,6 +6,7 @@ import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
 import { triggerClassification } from './classifier-service';
+import { downloadEvents } from './downloader-service';
 
 const request = require('request');
 
@@ -42,18 +43,16 @@ app.post('/api/process-event', (req, res) => {
 
 })
 
-app.get('/api/trigger-download-from-ring/:day', (req, res) => {
+app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
   console.log(`Will download new ring events for ${req.params.day}`);
 
-  request(`${environment.ringConnectorBaseUrl}/connector/download/${req.params.day}`, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      console.log("Response from backend. ", body);
-      const responseArray = JSON.parse(body) as [];
-      const response = { eventCount: responseArray.length } as DownloadFromRingResponse;
-      res.send(response);
-
-    }
-  });
+  try{
+    const events = await downloadEvents(req.params.day);
+    res.send(events);
+  }
+  catch (err){
+    res.status(500).send({error: err});
+  }
 
 })
 
