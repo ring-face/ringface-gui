@@ -156,3 +156,14 @@ app.post('/api/tag-person', (req, res) => {
 
   res.send({message:`Tagged to ${tagPersonRequest.newName}`});
 });
+
+app.get('/api/trigger-classification', async (req, res) => {
+  try{
+    const data = await triggerClassification();
+    res.send(data);
+  }
+  catch (err){
+    console.error(`saving the backend reponse failed`, err);
+    res.sendStatus(500);
+  }
+});

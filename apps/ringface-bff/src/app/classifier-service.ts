@@ -1,19 +1,18 @@
-
-import * as request from 'request';
 import { environment } from '../environments/environment';
+import { saveToDb, CollectionName } from './database';
+
+import axios from 'axios';
 
 
 
-export function triggerClassification(){
-  var options = {
-    uri: `${environment.ringRecogniserBaseUrl}/classifier/run`,
-    method: 'GET'
-  };
+export async function triggerClassification(){
 
-  request(options, function (error, response, backendResponse) {
-    if (!error && response.statusCode == 200) {
-      console.log("Response from backend /classifier/run", backendResponse);
+  const backendResponse = await axios.get(`${environment.ringRecogniserBaseUrl}/classifier/run`);
+  const data = backendResponse.data;
+  console.log("Response from backend /classifier/run", data);
 
-    }
-  });
+  await saveToDb(CollectionName.ClassificationResult, data);
+
+  return data
+
 }
