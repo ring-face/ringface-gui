@@ -6,7 +6,8 @@ import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
 import { triggerClassification } from './classifier-service';
-import { downloadEvents } from './downloader-service';
+import { downloadEvents, events } from './downloader-service';
+import { loadEventsForDay } from './database';
 
 const request = require('request');
 
@@ -51,15 +52,27 @@ app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
     res.send(events);
   }
   catch (err){
+    console.error(err);
     res.status(500).send({error: err});
   }
 
 })
 
+app.get('/api/events/:day', async (req, res) => {
+  console.log(`Requesting data for ${req.params.day}`);
+  try{
+    const events =  await loadEventsForDay(req.params.day);
+    res.send(events);
+  } catch (err){
+    console.error(err);
+    res.status(500).send({error: err});
+  }
+});
+
 /**
  * day param of format yyyymmdd
  */
-app.get('/api/events/:day', (req, res) => {
+app.get('/api/events-file/:day', (req, res) => {
 
   console.log(`Requesting data for ${req.params.day}`);
 

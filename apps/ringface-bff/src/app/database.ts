@@ -1,3 +1,4 @@
+import { RingEvent } from '@ringface/data';
 import {MongoClient, Db} from 'mongodb';
 
 const mongoUrl = buildMongoUrl();
@@ -13,7 +14,7 @@ MongoClient.connect(mongoUrl).then(
     db = mongoClient.db("ringfacedb");
 
     // db.collection("testcollection").insertOne({ a: 1 });
-    db.collection('testcollection').find().toArray()
+    db.collection(CollectionName.RingEvent).find().toArray()
     .then(results => {
       console.log(results)
     })
@@ -34,4 +35,10 @@ export async function saveToDb(collectionName:CollectionName, obj:any){
 
 export async function saveListToDb(collectionName:CollectionName, obj:any[]){
   await db.collection(collectionName).insertMany(obj)
+}
+
+export async function loadEventsForDay(dayAsyyyymmdd:string) {
+  console.log(`Loading events from db for ${dayAsyyyymmdd}`);
+  const query = { date: dayAsyyyymmdd };
+  return await db.collection<RingEvent>(CollectionName.RingEvent).find(query).toArray();
 }

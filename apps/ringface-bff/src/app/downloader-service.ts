@@ -1,5 +1,5 @@
 import { environment } from '../environments/environment';
-import { saveListToDb, CollectionName } from './database';
+import { saveListToDb, CollectionName, loadEventsForDay } from './database';
 import { RingEvent } from '@ringface/data';
 
 import axios from 'axios';
