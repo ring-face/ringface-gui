@@ -91,7 +91,7 @@ app.post('/api/process-event', async (req, res) => {
 /**
  * day param of format yyyymmdd
  */
-app.get('/api/events-file/:day', (req, res) => {
+app.get('/api/events-old/:day', (req, res) => {
 
   console.log(`Requesting data for ${req.params.day}`);
 

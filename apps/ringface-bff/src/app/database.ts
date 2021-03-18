@@ -1,9 +1,10 @@
-import { RingEvent } from '@ringface/data';
+import { ProcessingResult, RingEvent } from '@ringface/data';
 import {MongoClient, Db} from 'mongodb';
 
 const mongoUrl = buildMongoUrl();
 export var db:Db;
 
+const LATEST_IN_COLLECTION = {sort:{$natural:-1}};
 
 
 
@@ -17,11 +18,11 @@ MongoClient.connect(mongoUrl).then(
     db = mongoClient.db("ringfacedb");
 
     // db.collection("testcollection").insertOne({ a: 1 });
-    db.collection(CollectionName.RingEvent).find().toArray()
-    .then(results => {
-      console.log(results)
-    })
-    .catch(error => console.error(error));
+    // db.collection(CollectionName.RingEvent).find().toArray()
+    // .then(results => {
+    //   console.log(results)
+    // })
+    // .catch(error => console.error(error));
 
     // mongoClient.close();
   }
@@ -42,6 +43,25 @@ export async function saveListToDb(collectionName:CollectionName, obj:any[]){
 
 export async function loadEventsForDay(dayAsyyyymmdd:string) {
   console.log(`Loading events from db for ${dayAsyyyymmdd}`);
-  const query = { date: dayAsyyyymmdd };
-  return await db.collection<RingEvent>(CollectionName.RingEvent).find(query).toArray();
+  const query1 = { date: dayAsyyyymmdd };
+  const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).toArray();
+  for (const ringEvent of ringEvents){
+    const query2 = {eventName: ringEvent.eventName};
+    const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2, LATEST_IN_COLLECTION);
+    if (processingResult){
+      console.log(`Add processing result to event ${ringEvent.eventName}`);
+      ringEvent.processingResult = processingResult;
+      ringEvent.status = 'PROCESSED';
+    }
+  }
+  // ringEvents.forEach(async ringEvent => {
+  //   const query2 = {eventName: ringEvent.eventName};
+  //   const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2);
+  //   if (processingResult){
+  //     console.log(`Add processing result to event ${ringEvent.eventName}`);
+  //     ringEvent.processingResult = processingResult;
+  //   }
+  // });
+  console.log(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
+  return ringEvents;
 }
