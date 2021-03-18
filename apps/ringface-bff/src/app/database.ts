@@ -1,4 +1,4 @@
-import { ProcessingResult, RingEvent } from '@ringface/data';
+import { ProcessingResult, RingEvent} from '@ringface/data';
 import {MongoClient, Db} from 'mongodb';
 
 const mongoUrl = buildMongoUrl();
@@ -41,7 +41,7 @@ export async function saveListToDb(collectionName:CollectionName, obj:any[]){
   await db.collection(collectionName).insertMany(obj)
 }
 
-export async function loadEventsForDay(dayAsyyyymmdd:string) {
+export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
   console.log(`Loading events from db for ${dayAsyyyymmdd}`);
   const query1 = { date: dayAsyyyymmdd };
   const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).toArray();
@@ -54,14 +54,15 @@ export async function loadEventsForDay(dayAsyyyymmdd:string) {
       ringEvent.status = 'PROCESSED';
     }
   }
-  // ringEvents.forEach(async ringEvent => {
-  //   const query2 = {eventName: ringEvent.eventName};
-  //   const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2);
-  //   if (processingResult){
-  //     console.log(`Add processing result to event ${ringEvent.eventName}`);
-  //     ringEvent.processingResult = processingResult;
-  //   }
-  // });
+
   console.log(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
   return ringEvents;
+}
+
+export async function loadLatestClassificationResult(){
+
+  const classificationResult = await db.collection<any>(CollectionName.ClassificationResult).findOne({}, LATEST_IN_COLLECTION);
+
+  return classificationResult;
+
 }
