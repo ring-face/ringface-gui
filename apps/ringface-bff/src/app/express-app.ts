@@ -5,7 +5,7 @@ import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingRe
 import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
-import { triggerClassification } from './classifier-service';
+import { processEvent, triggerClassification } from './classifier-service';
 import { downloadEvents, events } from './downloader-service';
 import { loadEventsForDay } from './database';
 
@@ -22,7 +22,10 @@ app.get('/api', (req, res) => {
 
 
 
-app.post('/api/process-event', (req, res) => {
+/**
+ * Deprecated
+ */
+app.post('/api/process-event-old', (req, res) => {
 
   console.log(`will start recognition on`, req.body);
 
@@ -64,6 +67,22 @@ app.get('/api/events/:day', async (req, res) => {
     const events =  await loadEventsForDay(req.params.day);
     res.send(events);
   } catch (err){
+    console.error(err);
+    res.status(500).send({error: err});
+  }
+});
+
+app.post('/api/process-event', async (req, res) => {
+
+  const event = req.body as RingEvent;
+
+  console.log(`will start recognition on`, event);
+
+  try{
+    const processingResult = await processEvent(event);
+    res.send(processingResult);
+  }
+  catch (err){
     console.error(err);
     res.status(500).send({error: err});
   }

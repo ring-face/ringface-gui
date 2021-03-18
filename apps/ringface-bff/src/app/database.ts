@@ -5,9 +5,12 @@ const mongoUrl = buildMongoUrl();
 export var db:Db;
 
 
+
+
 export enum CollectionName {
   ClassificationResult = "ClassificationResult",
-  RingEvent = "RingEvent"
+  RingEvent = "RingEvent",
+  ProcessingResult = "ProcessingResult"
 }
 MongoClient.connect(mongoUrl).then(
   mongoClient => {
