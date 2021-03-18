@@ -1,13 +1,13 @@
 
 import * as express from 'express';
 import * as fs from 'fs';
-import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest} from '@ringface/data'
+import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest, PersonImages} from '@ringface/data'
 import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
 import { processEvent, triggerClassification } from './classifier-service';
 import { downloadEvents } from './downloader-service';
-import { loadLatestClassificationResult, loadRingEventsForDay } from './database';
+import * as database from './database';
 
 const request = require('request');
 
@@ -49,7 +49,7 @@ app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
 app.get('/api/events/:day', async (req, res) => {
   console.log(`Requesting data for ${req.params.day}`);
   try{
-    const events =  await loadRingEventsForDay(req.params.day);
+    const events =  await database.loadRingEventsForDay(req.params.day);
     res.send(events);
   } catch (err){
     console.error(err);
@@ -84,7 +84,7 @@ app.get('/api/images/*', (req, res) => {
 
 app.get('/api/most-recent-fitting/', async (req, res) => {
   try{
-    res.send(await loadLatestClassificationResult());
+    res.send(await database.loadLatestClassificationResult());
   }
   catch (err){
     console.error(err);
@@ -92,8 +92,20 @@ app.get('/api/most-recent-fitting/', async (req, res) => {
   }});
 
 
+app.post('/api/tag-person', async (req, res) => {
+    const tagPersonRequest: TagPersonRequest = req.body;
+    console.log('Tagging: ', tagPersonRequest);
 
-app.post('/api/tag-person', (req, res) => {
+
+    await database.addToPersonImages(tagPersonRequest.newName, tagPersonRequest.unknownPerson.imagePaths)
+
+    await database.updateProcessingResult(tagPersonRequest);
+
+    res.sendStatus(200);
+
+});
+
+app.post('/api/tag-person-old', (req, res) => {
   const tagPersonRequest: TagPersonRequest = req.body;
   console.log('Tagging: ', tagPersonRequest);
 

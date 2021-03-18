@@ -1,4 +1,4 @@
-import { ProcessingResult, RingEvent} from '@ringface/data';
+import { PersonImages, ProcessingResult, RingEvent, TagPersonRequest} from '@ringface/data';
 import {MongoClient, Db} from 'mongodb';
 
 const mongoUrl = buildMongoUrl();
@@ -8,10 +8,14 @@ const LATEST_IN_COLLECTION = {sort:{$natural:-1}};
 
 
 
+
+
+
 export enum CollectionName {
   ClassificationResult = "ClassificationResult",
   RingEvent = "RingEvent",
-  ProcessingResult = "ProcessingResult"
+  ProcessingResult = "ProcessingResult",
+  PersonImages = "PersonImages"
 }
 MongoClient.connect(mongoUrl).then(
   mongoClient => {
@@ -66,3 +70,39 @@ export async function loadLatestClassificationResult(){
   return classificationResult;
 
 }
+export async function addToPersonImages(personName: string, imagePaths: string[]) {
+  const personImages = await db.collection<PersonImages>(CollectionName.PersonImages).findOne({personName:personName});
+  if (! personImages){
+    console.log(`creating new person ${personName}`);
+    await db.collection<PersonImages>(CollectionName.PersonImages).insertOne({personName:personName, imagePaths:imagePaths});
+  } else {
+    console.log(`adding to existing person ${personName}`);
+    await db.collection<PersonImages>(CollectionName.PersonImages).updateOne(
+      {personName:personName},
+      { $addToSet: { imagePaths: { $each: imagePaths }}}
+    );
+  }
+}
+
+/**
+ * add the name as recognisedPerson and remove the unknown person
+ */
+export async function updateProcessingResult(tagPersonRequest: TagPersonRequest) {
+
+  // await db.collection<ProcessingResult>(CollectionName.ProcessingResult).updateOne(
+  //   {eventName:tagPersonRequest.eventName},
+  //   { $pull: { unknownPersons: { name: tagPersonRequest.unknownPerson.name } }
+
+  // );
+
+
+  const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne({eventName:tagPersonRequest.eventName});
+  //processingResult.taggedPersons = processingResult.unknownPersons.filter(unknownPerson => unknownPerson.name == tagPersonRequest.unknownPerson.name);
+  processingResult.unknownPersons = processingResult.unknownPersons.filter(unknownPerson => unknownPerson.name != tagPersonRequest.unknownPerson.name);
+  if(! processingResult.recognisedPersons.includes(tagPersonRequest.newName)){
+    processingResult.recognisedPersons.push(tagPersonRequest.newName);
+  }
+  await db.collection<ProcessingResult>(CollectionName.ProcessingResult).save(processingResult);
+  console.log("updated the ProcessingResult to ", processingResult);
+}
+
