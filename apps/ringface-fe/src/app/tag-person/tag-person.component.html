@@ -10,7 +10,7 @@
         </div>
         <div class="col">
           <input
-            id="name"
+            id="{{ unknownPerson.name }}"
             [(ngModel)]="newName"
             [typeahead]="knownPersons"
             placeholder="{{ unknownPerson.name }}"

@@ -1,7 +1,7 @@
 
 import * as express from 'express';
 import * as fs from 'fs';
-import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest, PersonImages} from '@ringface/data'
+import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest, PersonImages, TagPersonResponse} from '@ringface/data'
 import { environment, dirStructure } from '../environments/environment'
 import * as path from 'path';
 import * as glob from 'glob';
@@ -101,7 +101,7 @@ app.post('/api/tag-person', async (req, res) => {
 
     await database.updateProcessingResult(tagPersonRequest);
 
-    res.sendStatus(200);
+    res.send({message:`Tagged to ${tagPersonRequest.newName}`} as TagPersonResponse);
 
 });
 

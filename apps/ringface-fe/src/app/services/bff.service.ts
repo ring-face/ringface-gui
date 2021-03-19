@@ -31,10 +31,10 @@ export class BffService {
     return this.httpClient.get<FittingResult>('/api/most-recent-fitting/');
   }
 
-  tagPerson(eventName: string, unknownPerson: UnknownPerson, newName: string) {
+  public tagPerson(eventName: string, unknownPerson: UnknownPerson, newName: string) {
     const tagPersonRequest = {eventName, unknownPerson, newName} as TagPersonRequest;
     return this.httpClient.post<TagPersonResponse>(`/api/tag-person/`, tagPersonRequest).pipe(
-      tap(_ => console.log(`tagged ${unknownPerson} to ${newName}`)),
+      tap(_ => console.log(`tagged ${unknownPerson.name} to ${newName}`)),
       catchError(this.handleError<TagPersonResponse>())
     );
   }

@@ -35,6 +35,7 @@ export class DaysEventsComponent implements OnInit {
 
   onProcessEvent(event:RingEvent){
     console.log(`Will start processing event ${event.eventName}`);
+    event.processingTriggered = true;
     this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .subscribe( response => {
       console.log(response);
