@@ -23,7 +23,7 @@ export class TagPersonComponent implements OnInit {
   ngOnInit(): void {
     this.bffService.mostRecentFitting().subscribe(fittingResult => {
       console.log(`fitting result retrieved`, fittingResult);
-      this.knownPersons = Object.keys(fittingResult.persons);
+      this.knownPersons = fittingResult.persons.map( personImages => personImages.personName);
     });
   }
 
