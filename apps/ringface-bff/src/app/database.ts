@@ -106,3 +106,7 @@ export async function updateProcessingResult(tagPersonRequest: TagPersonRequest)
   console.log("updated the ProcessingResult to ", processingResult);
 }
 
+export async function loadAllPersonImages() {
+  return await db.collection<PersonImages>(CollectionName.PersonImages).find().toArray();
+}
+
