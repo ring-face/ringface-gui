@@ -34,7 +34,7 @@
           <button
             type="button"
             class="btn btn-secondary"
-            (click)="onTagPerson(event, template)"
+            (click)="onTagPersonButtonClicked(event, template)"
           >
             Tag {{event.processingResult.unknownPersons.length}} Person
           </button>
@@ -52,6 +52,6 @@
     </button>
   </div>
   <div class="modal-body">
-    <ringface-tag-person [event]=selectedEvent></ringface-tag-person>
+    <ringface-tag-person [event]=selectedEvent ></ringface-tag-person>
   </div>
 </ng-template>

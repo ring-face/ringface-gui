@@ -43,9 +43,14 @@ export class DaysEventsComponent implements OnInit {
     });
   }
 
-  onTagPerson(event:RingEvent, template: TemplateRef<any>){
+  onTagPersonButtonClicked(event:RingEvent, template: TemplateRef<any>){
     this.selectedEvent = event;
     this.tagPersonModal = this.modalService.show(template);
+  }
+
+  onPersonTagged(){
+    console.log(`onPersonTagged, refreshing events for ${this.date}`);
+    this.events = this.bffService.events(this.date);
   }
 
 }

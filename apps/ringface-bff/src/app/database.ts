@@ -21,6 +21,8 @@ MongoClient.connect(mongoUrl).then(
   mongoClient => {
     db = mongoClient.db("ringfacedb");
 
+    ensureConstraints();
+
     // db.collection("testcollection").insertOne({ a: 1 });
     // db.collection(CollectionName.RingEvent).find().toArray()
     // .then(results => {
@@ -31,6 +33,10 @@ MongoClient.connect(mongoUrl).then(
     // mongoClient.close();
   }
 );
+
+function ensureConstraints(){
+  db.collection(CollectionName.ProcessingResult).createIndex({"eventName":1}, {unique:true});
+}
 
 function buildMongoUrl(){
   return `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/ringfacedb`
@@ -53,7 +59,7 @@ export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
     const query2 = {eventName: ringEvent.eventName};
     const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2, LATEST_IN_COLLECTION);
     if (processingResult){
-      console.log(`Add processing result to event ${ringEvent.eventName}`);
+      console.log(`Add processing result to event ${ringEvent.eventName}`, processingResult);
       ringEvent.processingResult = processingResult;
       ringEvent.status = 'PROCESSED';
     }
@@ -89,15 +95,8 @@ export async function addToPersonImages(personName: string, imagePaths: string[]
  */
 export async function updateProcessingResult(tagPersonRequest: TagPersonRequest) {
 
-  // await db.collection<ProcessingResult>(CollectionName.ProcessingResult).updateOne(
-  //   {eventName:tagPersonRequest.eventName},
-  //   { $pull: { unknownPersons: { name: tagPersonRequest.unknownPerson.name } }
-
-  // );
-
-
   const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne({eventName:tagPersonRequest.eventName});
-  //processingResult.taggedPersons = processingResult.unknownPersons.filter(unknownPerson => unknownPerson.name == tagPersonRequest.unknownPerson.name);
+
   processingResult.unknownPersons = processingResult.unknownPersons.filter(unknownPerson => unknownPerson.name != tagPersonRequest.unknownPerson.name);
   if(! processingResult.recognisedPersons.includes(tagPersonRequest.newName)){
     processingResult.recognisedPersons.push(tagPersonRequest.newName);

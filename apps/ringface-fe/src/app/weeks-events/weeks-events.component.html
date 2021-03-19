@@ -8,7 +8,13 @@
     </div>
     <ng-template #loading>Loading events...</ng-template>
 
-    <button type="button" class="btn btn-primary" (click)="onDownloadEventsFromRing(daysData)">Download events</button>
+    <button type="button"
+      class="btn btn-primary"
+      (click)="onDownloadEventsFromRing(daysData)"
+      [disabled] = "daysData.processingTriggered"
+      >
+      Download events
+    </button>
 
   </accordion-group>
 

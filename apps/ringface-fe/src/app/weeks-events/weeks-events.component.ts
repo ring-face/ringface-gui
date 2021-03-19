@@ -45,6 +45,7 @@ export class WeeksEventsComponent implements OnInit {
   }
 
   onDownloadEventsFromRing(daysData: DaysData){
+    daysData.processingTriggered = true;
     this.bffService.triggerDownloadFromRing(daysData.date)
       .subscribe(response => {
         console.log(`Ring download finished with ${response.eventCount} events, refreshing ${daysData.date}`);

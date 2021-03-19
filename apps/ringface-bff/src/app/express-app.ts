@@ -47,7 +47,7 @@ app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
 })
 
 app.get('/api/events/:day', async (req, res) => {
-  console.log(`Requesting data for ${req.params.day}`);
+  console.log(`Requesting events for ${req.params.day}`);
   try{
     const events =  await database.loadRingEventsForDay(req.params.day);
     res.send(events);
@@ -78,7 +78,7 @@ app.post('/api/process-event', async (req, res) => {
 app.get('/api/images/*', (req, res) => {
   const imagePath = req.path.substring(12);
   const baseDir = '/Users/csaba/dev_ring/repo/ring-connector/';
-  console.log(`getting image ${imagePath}`);
+  // console.log(`getting image ${imagePath}`);
   res.sendFile(baseDir + imagePath);
 });
 
@@ -102,6 +102,9 @@ app.post('/api/tag-person', async (req, res) => {
     await database.updateProcessingResult(tagPersonRequest);
 
     triggerClassification();
+
+    console.log('Tagging finished: ', tagPersonRequest);
+
 
     res.send({message:`Tagged to ${tagPersonRequest.newName}`} as TagPersonResponse);
 

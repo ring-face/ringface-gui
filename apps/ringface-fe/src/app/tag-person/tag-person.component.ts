@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Host, Input, OnInit } from '@angular/core';
 import { RingEvent, UnknownPerson } from '@ringface/data';
+import { DaysEventsComponent } from '../days-events/days-events.component';
 import { BffService } from '../services/bff.service';
 
 @Component({
@@ -10,17 +11,24 @@ import { BffService } from '../services/bff.service';
 export class TagPersonComponent implements OnInit {
 
   @Input() event: RingEvent;
+
   newName:string;
   knownPersons :string[]=[
     "initialising",
   ]
   buttonDisabled = false;
+  parent: DaysEventsComponent;
 
   constructor(
-    private bffService: BffService
-  ) { }
+    private bffService: BffService,
+    @Host() parent: DaysEventsComponent
+  ) {
+    this.parent = parent;
+  }
 
   ngOnInit(): void {
+    console.log("will tag persons in event: ", this.event);
+
     this.bffService.mostRecentFitting().subscribe(fittingResult => {
       console.log(`fitting result retrieved`, fittingResult);
       this.knownPersons = fittingResult.persons.map( personImages => personImages.personName);
@@ -32,6 +40,7 @@ export class TagPersonComponent implements OnInit {
     this.bffService.tagPerson(this.event.eventName, unknownPerson, this.newName).subscribe(response =>{
       unknownPerson.name = this.newName;
       this.buttonDisabled = true;
+      this.parent.onPersonTagged();
     });
   }
 
