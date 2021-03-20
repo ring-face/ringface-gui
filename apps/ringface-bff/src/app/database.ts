@@ -36,6 +36,9 @@ MongoClient.connect(mongoUrl).then(
 
 function ensureConstraints(){
   db.collection(CollectionName.ProcessingResult).createIndex({"eventName":1}, {unique:true});
+  db.collection(CollectionName.RingEvent).createIndex({"videoFileName":1}, {unique:true});
+  db.collection(CollectionName.PersonImages).createIndex({"personName":1}, {unique:true});
+
 }
 
 function buildMongoUrl(){
