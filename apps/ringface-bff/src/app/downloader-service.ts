@@ -1,19 +1,22 @@
 import { environment } from '../environments/environment';
-import { saveListToDb, CollectionName } from './database';
+import * as database from './database';
+import {CollectionName} from './database';
 import { RingEvent } from '@ringface/data';
 
 import axios from 'axios';
 
 export async function downloadEvents(day:string) {
 
+  const downloadedEventsRingIds = await (await database.loadRingEventsForDay(day)).map(ringEvent => ringEvent.ringId);
+  const backendResponse = await axios.post<RingEvent[]>(`${environment.ringConnectorBaseUrl}/connector/download/${day}`, downloadedEventsRingIds);
+  const ringEvents = backendResponse.data;
 
-  const backendResponse = await axios.get<RingEvent[]>(`${environment.ringConnectorBaseUrl}/connector/download/${day}`);
-  const data = backendResponse.data;
+  console.log("Response from backend. ", ringEvents);
 
-  console.log("Response from backend. ", data);
+  if (ringEvents.length > 0){
+    await database.saveListToDb(CollectionName.RingEvent, ringEvents);
+  }
 
-  await saveListToDb(CollectionName.RingEvent, data);
-
-  return data;
+  return ringEvents;
 
 }
