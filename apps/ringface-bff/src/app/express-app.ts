@@ -79,13 +79,8 @@ app.get('/api/images/*', (req, res) => {
   const imagePath = req.path.substring(12);
   console.log(`getting image ${imagePath}`);
 
-  if (process.env.DATA_DIR){
-    // not running in container - relative path
-    res.sendFile(imagePath, { root: process.env.DATA_DIR });
-  } else {
-    // running in container - absoute path
-    res.sendFile(imagePath);
-  }
+  res.sendFile(imagePath, { root: process.env.DATA_DIR });
+
 });
 
 app.get('/api/most-recent-fitting/', async (req, res) => {
