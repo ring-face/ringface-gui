@@ -19,7 +19,7 @@ export async function triggerClassification(){
 
     console.log("Triggering classifier/fit for ", fitClassifierRequest);
 
-    const backendResponse = await axios.post(`${environment.ringRecogniserBaseUrl}/classifier/fit`, fitClassifierRequest);
+    const backendResponse = await axios.post(`http://${process.env.CLASSIFIER_HOST}:5001/classifier/fit`, fitClassifierRequest);
     const data = backendResponse.data;
     console.log("Response from backend /classifier/run", data);
 
@@ -36,7 +36,7 @@ export async function triggerClassification(){
 }
 
 export async function processEvent(event: RingEvent){
-  const backendResponse = await axios.post<ProcessingResult>(`${environment.ringRecogniserBaseUrl}/recognition/local-video`, event);
+  const backendResponse = await axios.post<ProcessingResult>(`http://${process.env.CLASSIFIER_HOST}:5001/recognition/local-video`, event);
   const processingResult = backendResponse.data;
   console.log("processEvent response from /classifier/run", processingResult);
 

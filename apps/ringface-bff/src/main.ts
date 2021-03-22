@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
+  // console.log("Loaded env", process.env);
 }
 
 const port = process.env.PORT || 3333;

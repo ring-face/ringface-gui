@@ -1,5 +1,5 @@
 import { PersonImages, ProcessingResult, RingEvent, TagPersonRequest} from '@ringface/data';
-import {MongoClient, Db} from 'mongodb';
+import {MongoClient, Db, connect} from 'mongodb';
 
 const mongoUrl = buildMongoUrl();
 export var db:Db;
@@ -7,7 +7,7 @@ export var db:Db;
 const LATEST_IN_COLLECTION = {sort:{$natural:-1}};
 
 
-
+connectToDb();
 
 
 
@@ -17,19 +17,21 @@ export enum CollectionName {
   ProcessingResult = "ProcessingResult",
   PersonImages = "PersonImages"
 }
-MongoClient.connect(mongoUrl)
-.then(
-  mongoClient => {
-    db = mongoClient.db("ringfacedb");
 
-    ensureConstraints();
 
-  }
-)
-.catch(error => {
-  console.error("Could not connect to the database", error);
-  process.kill(process.pid, 'SIGTERM')
-});
+function connectToDb() {
+  MongoClient.connect(mongoUrl)
+    .then((mongoClient) => {
+      console.warn("Database connecting");
+      db = mongoClient.db('ringfacedb');
+      console.warn("Database connected");
+      ensureConstraints();
+    })
+    .catch((error) => {
+      console.error('Could not connect to the database. Will retry');
+      setTimeout(connectToDb, 2000);
+    });
+}
 
 function ensureConstraints(){
   db.collection(CollectionName.ProcessingResult).createIndex({"eventName":1}, {unique:true});
@@ -39,7 +41,10 @@ function ensureConstraints(){
 }
 
 function buildMongoUrl(){
-  return `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/ringfacedb`
+  const dbUrl =  `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/ringfacedb`;
+  console.log(`will connect to db on ${dbUrl.replace(process.env.MONGO_PASSWORD, 'xxxxx')}`);
+  return dbUrl;
+
 }
 
 
