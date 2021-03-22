@@ -15,15 +15,23 @@ export async function triggerClassification(){
     persons: await database.loadAllPersonImages()
   };
 
-  console.log("Triggering classifier/fit for ", fitClassifierRequest);
+  if (fitClassifierRequest.persons.length > 1){
 
-  const backendResponse = await axios.post(`${environment.ringRecogniserBaseUrl}/classifier/fit`, fitClassifierRequest);
-  const data = backendResponse.data;
-  console.log("Response from backend /classifier/run", data);
+    console.log("Triggering classifier/fit for ", fitClassifierRequest);
 
-  await database.saveToDb(CollectionName.ClassificationResult, data);
+    const backendResponse = await axios.post(`${environment.ringRecogniserBaseUrl}/classifier/fit`, fitClassifierRequest);
+    const data = backendResponse.data;
+    console.log("Response from backend /classifier/run", data);
 
-  return data
+    await database.saveToDb(CollectionName.ClassificationResult, data);
+
+    return data
+  }
+  else {
+    console.log("Not enough data to trigger the re-classification");
+    return Promise.resolve();
+  }
+
 
 }
 
