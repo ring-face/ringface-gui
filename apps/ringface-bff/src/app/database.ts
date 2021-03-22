@@ -17,22 +17,19 @@ export enum CollectionName {
   ProcessingResult = "ProcessingResult",
   PersonImages = "PersonImages"
 }
-MongoClient.connect(mongoUrl).then(
+MongoClient.connect(mongoUrl)
+.then(
   mongoClient => {
     db = mongoClient.db("ringfacedb");
 
     ensureConstraints();
 
-    // db.collection("testcollection").insertOne({ a: 1 });
-    // db.collection(CollectionName.RingEvent).find().toArray()
-    // .then(results => {
-    //   console.log(results)
-    // })
-    // .catch(error => console.error(error));
-
-    // mongoClient.close();
   }
-);
+)
+.catch(error => {
+  console.error("Could not connect to the database", error);
+  process.kill(process.pid, 'SIGTERM')
+});
 
 function ensureConstraints(){
   db.collection(CollectionName.ProcessingResult).createIndex({"eventName":1}, {unique:true});
