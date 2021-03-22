@@ -96,17 +96,13 @@ app.post('/api/tag-person', async (req, res) => {
     const tagPersonRequest: TagPersonRequest = req.body;
     console.log('Tagging: ', tagPersonRequest);
 
-
     await database.addToPersonImages(tagPersonRequest.newName, tagPersonRequest.unknownPerson.imagePaths)
-
     await database.updateProcessingResult(tagPersonRequest);
 
-    triggerClassification();
-
     console.log('Tagging finished: ', tagPersonRequest);
-
-
     res.send({message:`Tagged to ${tagPersonRequest.newName}`} as TagPersonResponse);
+
+    triggerClassification();
 
 });
 
