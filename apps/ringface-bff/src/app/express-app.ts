@@ -69,7 +69,7 @@ app.post('/api/process-event', async (req, res) => {
     res.send(processingResult);
   }
   catch (err){
-    console.error(err);
+    console.error(`api/process-event failed`, err);
     res.status(500).send({error: err});
   }
 });
