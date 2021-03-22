@@ -14,7 +14,7 @@ export class TagPersonComponent implements OnInit {
 
   newName:string;
   knownPersons :string[]=[
-    "initialising",
+    "NO_PERSON_TAGGED_YET",
   ]
   buttonDisabled = false;
   parent: DaysEventsComponent;
@@ -31,7 +31,9 @@ export class TagPersonComponent implements OnInit {
 
     this.bffService.mostRecentFitting().subscribe(fittingResult => {
       console.log(`fitting result retrieved`, fittingResult);
-      this.knownPersons = fittingResult.persons.map( personImages => personImages.personName);
+      if (fittingResult){
+        this.knownPersons = fittingResult.persons.map( personImages => personImages.personName);
+      }
     });
   }
 
