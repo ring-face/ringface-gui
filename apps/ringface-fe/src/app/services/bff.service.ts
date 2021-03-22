@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse } from '@ringface/data';
+import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse } from '@ringface/data';
 import { yyyymmdd } from '../common/utils'
 import { share, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -36,6 +36,13 @@ export class BffService {
     return this.httpClient.post<TagPersonResponse>(`/api/tag-person/`, tagPersonRequest).pipe(
       tap(_ => console.log(`tagged ${unknownPerson.name} to ${newName}`)),
       catchError(this.handleError<TagPersonResponse>())
+    );
+  }
+
+  public processEvent(event:RingEvent){
+    return this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
+    .pipe(
+      catchError(this.handleError<ProcessEventResponse>())
     );
   }
 
