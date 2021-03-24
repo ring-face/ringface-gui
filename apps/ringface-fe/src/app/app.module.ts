@@ -15,6 +15,9 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TagPersonComponent } from './tag-person/tag-person.component';
 import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module';
+import { PersonsComponent } from './persons/persons.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 
 
@@ -24,7 +27,9 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     DaysEventsComponent,
     WeeksEventsComponent,
-    TagPersonComponent
+    TagPersonComponent,
+    PersonsComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,8 @@ import { FormsModule } from '@angular/forms';
     ModalModule.forRoot(),
     TypeaheadModule.forRoot(),
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent],

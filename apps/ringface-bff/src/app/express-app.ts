@@ -109,3 +109,15 @@ app.post('/api/tag-person', async (req, res) => {
 
 
 app.use("/api/videos", express.static('data/videos'));
+
+app.get('/api/person-images', async (req, res) => {
+  try{
+    console.log('Loading all person images');
+
+    res.send(await database.loadAllPersonImages());
+  }
+  catch (err){
+    console.error(err);
+    res.status(500).send({error: err});
+  }}
+);

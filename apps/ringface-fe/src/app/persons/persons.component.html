@@ -1,0 +1,17 @@
+<accordion [isAnimated]="true" [closeOthers]="true">
+  <accordion-group
+    *ngFor="let personImages of persons$ |async"
+    heading="{{ personImages.personName }}"
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col" *ngFor="let imagePath of personImages.imagePaths" >
+          <img
+            src="/api/images/{{ imagePath }}"
+            class="personImage"
+          />
+        </div>
+      </div>
+    </div>
+  </accordion-group>
+</accordion>
