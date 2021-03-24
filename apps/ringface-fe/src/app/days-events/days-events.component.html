@@ -1,23 +1,13 @@
 <table class="table table-hover">
   <tbody>
     <tr *ngFor="let event of events | async"class="d-flex" >
-      <td class="col-3"> {{ event.createdAt | date: 'shortTime' }}</td>
-      <td class="col-5">
-        {{ event.processingResult?.recognisedPersons }}
-        <!-- <ul *ngFor="let unknownPerson of event.processingResult.unknownPersons">
-          <li>{{ unknownPerson.name }}</li>
-        </ul> -->
-        <!-- <carousel>
-          <slide>
-            <img src="assets/1.jpeg" alt="first slide" style="display: block; width: 100%;">
-          </slide>
-          <slide>
-            <img src="assets/2.jpeg" alt="second slide" style="display: block; width: 100%;">
-          </slide>
-          <slide>
-            <img src="assets/3.jpeg" alt="third slide" style="display: block; width: 100%;">
-          </slide>
-        </carousel> -->
+      <td class="col-2"> {{ event.createdAt | date: 'shortTime' }}</td>
+      <td class="col-6">
+        <video controls width="250">
+          <source src={{videoLink(event)}} type="video/mp4">
+          <p>Your browser doesn't support HTML5 video. Here is
+             a <a href={{videoLink(event)}}>link to the video</a> instead.</p>
+        </video>
       </td>
       <td class="col-4">
         <ng-container *ngIf="event.status == 'UNPROCESSED'">
@@ -37,9 +27,11 @@
             class="btn btn-secondary"
             (click)="onTagPersonButtonClicked(event, template)"
           >
-            Tag {{event.processingResult.unknownPersons.length}} Person
+            Tag {{event.processingResult.unknownPersons.length}}
           </button>
+          <br/>
         </ng-container>
+        {{ event.processingResult?.recognisedPersons.join(' ') }}
       </td>
     </tr>
   </tbody>
