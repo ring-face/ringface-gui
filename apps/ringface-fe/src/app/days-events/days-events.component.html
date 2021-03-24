@@ -1,15 +1,7 @@
-<table class="table table-hover">
-  <tbody>
-    <tr *ngFor="let event of events | async"class="d-flex" >
-      <td class="col-2"> {{ event.createdAt | date: 'shortTime' }}</td>
-      <td class="col-6">
-        <video controls width="250">
-          <source src={{videoLink(event)}} type="video/mp4">
-          <p>Your browser doesn't support HTML5 video. Here is
-             a <a href={{videoLink(event)}}>link to the video</a> instead.</p>
-        </video>
-      </td>
-      <td class="col-4">
+<div class="container">
+    <div class="row" *ngFor="let event of events | async" >
+      <div class="col"> {{ event.createdAt | date: 'shortTime' }}</div>
+      <div class="col">
         <ng-container *ngIf="event.status == 'UNPROCESSED'">
           <button
             type="button"
@@ -27,15 +19,23 @@
             class="btn btn-secondary"
             (click)="onTagPersonButtonClicked(event, template)"
           >
-            Tag {{event.processingResult.unknownPersons.length}}
+            Tag {{event.processingResult.unknownPersons.length}} more
           </button>
           <br/>
         </ng-container>
         {{ event.processingResult?.recognisedPersons.join(' ') }}
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+
+      <div class="col">
+        <video controls width="250">
+          <source src={{videoLink(event)}} type="video/mp4">
+          <p>Your browser doesn't support HTML5 video. Here is
+             a <a href={{videoLink(event)}}>link to the video</a> instead.</p>
+        </video>
+      </div>
+
+    </div>
+</div>
 
 <ng-template #template>
   <div class="modal-header">
