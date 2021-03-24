@@ -108,3 +108,4 @@ app.post('/api/tag-person', async (req, res) => {
 });
 
 
+app.use("/api/videos", express.static('data/videos'));

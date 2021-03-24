@@ -58,6 +58,13 @@ export class DaysEventsComponent implements OnInit {
     this.events = this.bffService.events(this.date);
   }
 
+  /**
+   * ./data/videos/20210322-141301.mp4 -> 20210322-141301.mp4
+   */
+  videoLink(event: RingEvent){
+    return '/api/videos/' + event.videoFileName.replace(/^.*[\\\/]/, '');
+  }
+
 }
 
 

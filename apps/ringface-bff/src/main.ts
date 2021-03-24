@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
   // console.log("Loaded env", process.env);
 }
 
-const port = process.env.PORT || 3333;
+const port = Number(String(process.env.PORT)) || 3333;
 
 
 const server = app.listen(port, () => {
