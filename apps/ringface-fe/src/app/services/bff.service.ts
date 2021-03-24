@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse } from '@ringface/data';
+import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse, PersonImages } from '@ringface/data';
 import { yyyymmdd } from '../common/utils'
 import { share, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -11,6 +11,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class BffService {
+
 
 
   constructor(
@@ -55,6 +56,13 @@ export class BffService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  public loadAllPersonImages() {
+    return this.httpClient.get<PersonImages[]>(`/api/person-images`)
+    .pipe(
+      catchError(this.handleError<PersonImages[]>())
+    )
   }
 
 }
