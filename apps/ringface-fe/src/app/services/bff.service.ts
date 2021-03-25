@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse, PersonImages } from '@ringface/data';
-import { yyyymmdd } from '../common/utils'
+import { yyyymmdd } from '@ringface/data';
 import { share, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 

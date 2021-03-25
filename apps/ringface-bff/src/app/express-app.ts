@@ -1,13 +1,12 @@
 
+import { ProcessingResult, RingEvent, TagPersonRequest, TagPersonResponse } from '@ringface/data';
+import { yyyymmdd } from '@ringface/data';
+import { Timestamp } from 'bson';
+
 import * as express from 'express';
-import * as fs from 'fs';
-import { RingEvent, DownloadFromRingResponse, ProcessEventResponse, ProcessingResult, FittingResult, TagPersonRequest, PersonImages, TagPersonResponse} from '@ringface/data'
-import { environment } from '../environments/environment'
-import * as path from 'path';
-import * as glob from 'glob';
 import { processEvent, triggerClassification } from './classifier-service';
-import { downloadEvents } from './downloader-service';
 import * as database from './database';
+import { downloadEvents } from './downloader-service';
 
 const request = require('request');
 
@@ -121,3 +120,48 @@ app.get('/api/person-images', async (req, res) => {
     res.status(500).send({error: err});
   }}
 );
+
+let pollActive:ActivePoll = undefined;
+app.get("/api/poll-and-process/today", async (req, res) => {
+  if (pollActive){
+    res.status(204).send(pollActive);
+
+  }
+  else {
+    pollActive = {startTime: new Date()};
+    const todayAsyyyymmdd = yyyymmdd(pollActive.startTime);
+    try{
+      console.log(`Polling for new events for ${todayAsyyyymmdd}`);
+      pollActive.events = await downloadEvents(todayAsyyyymmdd);
+      console.log(`Downloaded ${pollActive.events.length}. Will start processing them sequentially`);
+      pollActive.processingResult = [];
+
+      // sync loop to be able to await
+      for (let i = 0; i < pollActive.events.length; i++){
+        console.log(`Will start recognition on`, pollActive.events[i]);
+        pollActive.processingResult.push(await processEvent(pollActive.events[i]));
+      }
+
+
+      console.log(`Finished the poll cycle for ${pollActive.startTime}`);
+      res.send(
+        pollActive
+      );
+    }
+    catch (err){
+      console.error(err);
+      res.status(500).send({error: err});
+    }
+    finally{
+      pollActive = undefined;
+    }
+
+  }
+});
+
+interface ActivePoll{
+  processingResult?: ProcessingResult[];
+  events?: RingEvent[];
+  startTime: Date,
+
+}
