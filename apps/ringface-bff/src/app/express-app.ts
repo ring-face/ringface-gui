@@ -108,7 +108,7 @@ app.post('/api/tag-person', async (req, res) => {
 });
 
 
-app.use("/api/videos", express.static('data/videos'));
+app.use("/api/videos", express.static(process.env.DATA_DIR + 'data/videos'));
 
 app.get('/api/person-images', async (req, res) => {
   try{
