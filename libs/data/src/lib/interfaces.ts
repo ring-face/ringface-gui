@@ -60,3 +60,10 @@ export interface PersonImages{
 export interface FitClassifierRequest{
   persons: PersonImages[]
 }
+
+export interface DownloadAndProcessProgress{
+  processingResult?: ProcessingResult[];
+  events?: RingEvent[];
+  processedDay?: string;
+  startTime: Date,
+}
