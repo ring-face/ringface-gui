@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "bff": "nx serve ringface-bff",
-    "fe": "ng serve",
+    "poll-new-events": "while true; do curl localhost:3333/api/poll-and-process/today; sleep 300 ;done",
+    "fe": "ng serve --host 0.0.0.0",
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "nx": "nx",
