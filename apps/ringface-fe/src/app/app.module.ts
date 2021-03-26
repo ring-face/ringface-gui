@@ -18,6 +18,8 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { PersonsComponent } from './persons/persons.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AdminComponent } from './admin/admin.component';
+import { DownloadWeekComponent } from './admin/download-week/download-week.component';
 
 
 
@@ -29,7 +31,9 @@ import { NavbarComponent } from './navbar/navbar.component';
     WeeksEventsComponent,
     TagPersonComponent,
     PersonsComponent,
-    NavbarComponent
+    NavbarComponent,
+    AdminComponent,
+    DownloadWeekComponent
   ],
   imports: [
     BrowserModule,

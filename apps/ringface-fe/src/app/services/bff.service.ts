@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse, PersonImages } from '@ringface/data';
+import { RingEvent,DownloadFromRingResponse, FittingResult, UnknownPerson, TagPersonRequest, TagPersonResponse, ProcessEventResponse, PersonImages, DownloadAndProcessProgress } from '@ringface/data';
 import { yyyymmdd } from '@ringface/data';
 import { share, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -11,6 +11,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class BffService {
+
 
 
 
@@ -63,6 +64,21 @@ export class BffService {
     .pipe(
       catchError(this.handleError<PersonImages[]>())
     )
+  }
+
+  public downloadWeekStatus() {
+    return this.httpClient.get<DownloadAndProcessProgress>(`/api/download-and-process/week/status`)
+    .pipe(
+      catchError(this.handleError<DownloadAndProcessProgress>())
+    )
+  }
+
+  public downloadWeek() {
+    this.httpClient.get<DownloadAndProcessProgress>(`/api/download-and-process/week`).subscribe(
+      weekDownloadProgress =>{
+        console.log("download week started", weekDownloadProgress);
+      }
+    );
   }
 
 }

@@ -1,5 +1,5 @@
 
-import { ProcessingResult, RingEvent, TagPersonRequest, TagPersonResponse } from '@ringface/data';
+import { ProcessingResult, RingEvent, TagPersonRequest, TagPersonResponse, DownloadAndProcessProgress } from '@ringface/data';
 import { yyyymmdd } from '@ringface/data';
 import { Timestamp } from 'bson';
 
@@ -121,31 +121,23 @@ app.get('/api/person-images', async (req, res) => {
   }}
 );
 
-let pollActive:ActivePoll = undefined;
+
+let todayProgress:DownloadAndProcessProgress = undefined;
 app.get("/api/poll-and-process/today", async (req, res) => {
-  if (pollActive){
-    res.status(204).send(pollActive);
+  if (todayProgress){
+    res.status(204).send(todayProgress);
 
   }
   else {
-    pollActive = {startTime: new Date()};
-    const todayAsyyyymmdd = yyyymmdd(pollActive.startTime);
+    todayProgress = {startTime: new Date()};
+    const todayAsyyyymmdd = yyyymmdd(todayProgress.startTime);
     try{
-      console.log(`Polling for new events for ${todayAsyyyymmdd}`);
-      pollActive.events = await downloadEvents(todayAsyyyymmdd);
-      console.log(`Downloaded ${pollActive.events.length}. Will start processing them sequentially`);
-      pollActive.processingResult = [];
-
-      // sync loop to be able to await
-      for (let i = 0; i < pollActive.events.length; i++){
-        console.log(`Will start recognition on`, pollActive.events[i]);
-        pollActive.processingResult.push(await processEvent(pollActive.events[i]));
-      }
+      downloadAndProcess(todayAsyyyymmdd, todayProgress);
 
 
-      console.log(`Finished the poll cycle for ${pollActive.startTime}`);
+      console.log(`Finished the poll cycle for ${todayProgress.startTime}`);
       res.send(
-        pollActive
+        todayProgress
       );
     }
     catch (err){
@@ -153,15 +145,69 @@ app.get("/api/poll-and-process/today", async (req, res) => {
       res.status(500).send({error: err});
     }
     finally{
-      pollActive = undefined;
+      todayProgress = undefined;
     }
 
   }
 });
 
-interface ActivePoll{
-  processingResult?: ProcessingResult[];
-  events?: RingEvent[];
-  startTime: Date,
 
+
+let weekProgress:DownloadAndProcessProgress = undefined;
+app.get('/api/download-and-process/week', async (req, res) => {
+
+  if (weekProgress){
+    res.status(204).send(weekProgress);
+
+  }
+  else {
+    weekProgress = {startTime: new Date()};
+    try{
+      console.log(`Started the week download at ${weekProgress.startTime}`);
+      res.send(
+        weekProgress
+      );
+
+      const actDate = new Date();
+      for(let i = 0; i < 7; i++) {
+        const dayString = yyyymmdd(actDate);
+
+        await downloadAndProcess(dayString, weekProgress);
+
+        actDate.setDate(actDate.getDate() - 1);
+
+      }
+    }
+    catch (err){
+      console.error(err);
+    }
+    finally{
+      weekProgress = undefined;
+    }
+
+  }
+});
+
+async function downloadAndProcess(dayAsyyyymmdd:string, progressCollector:DownloadAndProcessProgress){
+  progressCollector.processedDay = dayAsyyyymmdd;
+  console.log(`Fetching new events for ${dayAsyyyymmdd}`);
+  progressCollector.events = await downloadEvents(dayAsyyyymmdd);
+  console.log(`Downloaded ${progressCollector.events.length}. Will start processing them sequentially`);
+  progressCollector.processingResult = [];
+
+  // sync loop to be able to await
+  for (let i = 0; i < progressCollector.events.length; i++){
+    console.log(`Will start recognition on`, progressCollector.events[i]);
+    progressCollector.processingResult.push(await processEvent(progressCollector.events[i]));
+  }
 }
+
+app.get('/api/download-and-process/week/status', (req, res) => {
+
+  if (weekProgress){
+    res.send(weekProgress);
+  }
+  else {
+    res.sendStatus(204);
+  }
+});
