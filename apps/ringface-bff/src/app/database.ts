@@ -59,7 +59,7 @@ export async function saveListToDb(collectionName:CollectionName, obj:any[]){
 export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
   console.log(`Loading events from db for ${dayAsyyyymmdd}`);
   const query1 = { date: dayAsyyyymmdd };
-  const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).toArray();
+  const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).sort({"eventName": -1}).toArray();
   for (const ringEvent of ringEvents){
     const query2 = {eventName: ringEvent.eventName};
     const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2, LATEST_IN_COLLECTION);
