@@ -1,6 +1,6 @@
 {
   "name": "ringface",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "license": "MIT",
   "scripts": {
     "bff": "nx serve ringface-bff",
