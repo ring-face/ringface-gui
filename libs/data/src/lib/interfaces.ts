@@ -67,3 +67,8 @@ export interface DownloadAndProcessProgress{
   processedDay?: string;
   startTime: Date,
 }
+
+export interface IftttEvent{
+  createdAt: string,
+  doorbellName: string
+}

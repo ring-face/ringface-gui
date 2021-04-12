@@ -1,10 +1,10 @@
 
-import { ProcessingResult, RingEvent, TagPersonRequest, TagPersonResponse, DownloadAndProcessProgress } from '@ringface/data';
+import { IftttEvent, RingEvent, TagPersonRequest, TagPersonResponse, DownloadAndProcessProgress } from '@ringface/data';
 import { yyyymmdd } from '@ringface/data';
-import { Timestamp } from 'bson';
 
 import * as express from 'express';
 import { processEvent, triggerClassification } from './classifier-service';
+import { processIftttEvent } from './ifttt-service';
 import * as database from './database';
 import { downloadEvents } from './downloader-service';
 
@@ -209,5 +209,20 @@ app.get('/api/download-and-process/week/status', (req, res) => {
   }
   else {
     res.sendStatus(204);
+  }
+});
+
+app.post('/api/ifttt/event', (req, res) => {
+  try{
+    const event = req.body as IftttEvent;
+
+    console.log(`recieved IFTTT event`, event);
+    res.sendStatus(200);
+
+    processIftttEvent(event);
+  }
+  catch (err){
+    console.error(`/api/ifttt/event failed`, err);
+    res.status(500).send({error: err});
   }
 });
