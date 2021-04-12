@@ -7,8 +7,8 @@ import { processEvent, triggerClassification } from './classifier-service';
 import { processIftttEvent } from './ifttt-service';
 import * as database from './database';
 import { downloadEvents } from './downloader-service';
-
-const request = require('request');
+import * as  listEndpoints from 'express-list-endpoints';
+import { version } from '../../../../package.json';
 
 export const app = express();
 
@@ -226,3 +226,6 @@ app.post('/api/ifttt/event', (req, res) => {
     res.status(500).send({error: err});
   }
 });
+
+console.log(listEndpoints(app));
+console.log("Version: ", version);
