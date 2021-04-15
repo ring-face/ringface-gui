@@ -10,11 +10,11 @@ const format1 = winston.format.combine(
       const args = info[SPLAT];
       if (args){
         const strArgs = args.map(JSON.stringify).join(' ');
-        return `${info.timestamp} ${info.level}: ${info.message} ${strArgs}`;
+        return `${info.timestamp} ${info.level.padEnd(8)} ${info.message} ${strArgs}`;
 
       }
 
-      return `${info.timestamp} ${info.level}: ${info.message}`;
+      return `${info.timestamp} ${info.level.padEnd(8)} ${info.message}`;
     },
   ),
 )
