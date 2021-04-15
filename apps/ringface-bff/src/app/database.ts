@@ -1,5 +1,6 @@
 import { PersonImages, ProcessingResult, RingEvent, TagPersonRequest} from '@ringface/data';
 import {MongoClient, Db, connect} from 'mongodb';
+import logger  from './logger';
 
 const mongoUrl = buildMongoUrl();
 export var db:Db;
@@ -22,13 +23,13 @@ export enum CollectionName {
 function connectToDb() {
   MongoClient.connect(mongoUrl)
     .then((mongoClient) => {
-      console.warn("Database connecting");
+      logger.warn("Database connecting");
       db = mongoClient.db('ringfacedb');
-      console.warn("Database connected");
+      logger.warn("Database connected");
       ensureConstraints();
     })
     .catch((error) => {
-      console.error('Could not connect to the database. Will retry');
+      logger.error('Could not connect to the database. Will retry');
       setTimeout(connectToDb, 2000);
     });
 }
@@ -42,7 +43,7 @@ function ensureConstraints(){
 
 function buildMongoUrl(){
   const dbUrl =  `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/ringfacedb`;
-  console.log(`will connect to db on ${dbUrl.replace(process.env.MONGO_PASSWORD, 'xxxxx')}`);
+  logger.debug(`will connect to db on ${dbUrl.replace(process.env.MONGO_PASSWORD, 'xxxxx')}`);
   return dbUrl;
 
 }
@@ -57,20 +58,20 @@ export async function saveListToDb(collectionName:CollectionName, obj:any[]){
 }
 
 export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
-  console.log(`Loading events from db for ${dayAsyyyymmdd}`);
+  logger.debug(`Loading events from db for ${dayAsyyyymmdd}`);
   const query1 = { date: dayAsyyyymmdd };
   const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).sort({"eventName": -1}).toArray();
   for (const ringEvent of ringEvents){
     const query2 = {eventName: ringEvent.eventName};
     const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2, LATEST_IN_COLLECTION);
     if (processingResult){
-      console.log(`Add processing result to event ${ringEvent.eventName}`, processingResult);
+      logger.debug(`Add processing result to event ${ringEvent.eventName}`, processingResult);
       ringEvent.processingResult = processingResult;
       ringEvent.status = 'PROCESSED';
     }
   }
 
-  console.log(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
+  logger.debug(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
   return ringEvents;
 }
 
@@ -84,10 +85,10 @@ export async function loadLatestClassificationResult(){
 export async function addToPersonImages(personName: string, imagePaths: string[]) {
   const personImages = await db.collection<PersonImages>(CollectionName.PersonImages).findOne({personName:personName});
   if (! personImages){
-    console.log(`creating new person ${personName}`);
+    logger.debug(`creating new person ${personName}`);
     await db.collection<PersonImages>(CollectionName.PersonImages).insertOne({personName:personName, imagePaths:imagePaths});
   } else {
-    console.log(`adding to existing person ${personName}`);
+    logger.debug(`adding to existing person ${personName}`);
     await db.collection<PersonImages>(CollectionName.PersonImages).updateOne(
       {personName:personName},
       { $addToSet: { imagePaths: { $each: imagePaths }}}
@@ -107,7 +108,7 @@ export async function updateProcessingResult(tagPersonRequest: TagPersonRequest)
     processingResult.recognisedPersons.push(tagPersonRequest.newName);
   }
   await db.collection<ProcessingResult>(CollectionName.ProcessingResult).save(processingResult);
-  console.log("updated the ProcessingResult to ", processingResult);
+  logger.log("updated the ProcessingResult to ", processingResult);
 }
 
 export async function loadAllPersonImages() {

@@ -1,9 +1,9 @@
 import { environment } from '../environments/environment';
 import { CollectionName } from './database';
 import * as database from './database';
-
 import axios from 'axios';
 import { ProcessingResult, RingEvent, FitClassifierRequest, PersonImages} from '@ringface/data';
+import logger  from './logger';
 
 
 
@@ -17,18 +17,18 @@ export async function triggerClassification(){
 
   if (fitClassifierRequest.persons.length > 1){
 
-    console.log("Triggering classifier/fit for ", fitClassifierRequest);
+    logger.debug("Triggering classifier/fit for ", fitClassifierRequest);
 
     const backendResponse = await axios.post(`http://${process.env.CLASSIFIER_HOST}:5001/classifier/fit`, fitClassifierRequest);
     const data = backendResponse.data;
-    console.log("Response from backend /classifier/run", data);
+    logger.debug("Response from backend /classifier/run", data);
 
     await database.saveToDb(CollectionName.ClassificationResult, data);
 
     return data
   }
   else {
-    console.log("Not enough data to trigger the re-classification");
+    logger.debug("Not enough data to trigger the re-classification");
     return Promise.resolve();
   }
 
@@ -38,7 +38,7 @@ export async function triggerClassification(){
 export async function processEvent(event: RingEvent){
   const backendResponse = await axios.post<ProcessingResult>(`http://${process.env.CLASSIFIER_HOST}:5001/recognition/local-video`, event);
   const processingResult = backendResponse.data;
-  console.log("processEvent response from /classifier/run", processingResult);
+  logger.debug("processEvent response from /classifier/run", processingResult);
 
   await database.saveToDb(CollectionName.ProcessingResult, processingResult);
 
