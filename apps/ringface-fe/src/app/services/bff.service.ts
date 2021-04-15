@@ -29,6 +29,10 @@ export class BffService {
     return this.httpClient.get<RingEvent[]>(`/api/events/${yyyymmdd(date)}`).pipe(share());
   }
 
+  public eventsAll() {
+    return this.httpClient.get<RingEvent[]>(`/api/events`).pipe(share());
+  }
+
   public mostRecentFitting() {
     return this.httpClient.get<FittingResult>('/api/most-recent-fitting/');
   }

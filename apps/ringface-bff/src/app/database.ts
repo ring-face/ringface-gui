@@ -57,10 +57,28 @@ export async function saveListToDb(collectionName:CollectionName, obj:any[]){
   await db.collection(collectionName).insertMany(obj)
 }
 
+export async function loadRingEvents() {
+  logger.debug(`Loading all events from db`);
+  const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find().sort({"eventName": -1}).toArray();
+
+  await loadProcessingResults(ringEvents);
+
+  return ringEvents;
+
+}
+
 export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
   logger.debug(`Loading events from db for ${dayAsyyyymmdd}`);
   const query1 = { date: dayAsyyyymmdd };
   const ringEvents = await db.collection<RingEvent>(CollectionName.RingEvent).find(query1).sort({"eventName": -1}).toArray();
+
+  await loadProcessingResults(ringEvents);
+
+  logger.debug(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
+  return ringEvents;
+}
+
+async function loadProcessingResults(ringEvents: RingEvent[]){
   for (const ringEvent of ringEvents){
     const query2 = {eventName: ringEvent.eventName};
     const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne(query2, LATEST_IN_COLLECTION);
@@ -70,9 +88,6 @@ export async function loadRingEventsForDay(dayAsyyyymmdd:string) {
       ringEvent.status = 'PROCESSED';
     }
   }
-
-  logger.debug(`Returning ${ringEvents.length} events from db for ${dayAsyyyymmdd}`);
-  return ringEvents;
 }
 
 export async function loadLatestClassificationResult(){

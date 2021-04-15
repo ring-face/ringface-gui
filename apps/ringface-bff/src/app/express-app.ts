@@ -47,6 +47,17 @@ app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
 
 })
 
+app.get('/api/events', async (req, res) => {
+  logger.debug(`Requesting all events`);
+  try{
+    const events =  await database.loadRingEvents();
+    res.send(events);
+  } catch (err){
+    logger.error(err);
+    res.status(500).send({error: err});
+  }
+});
+
 app.get('/api/events/:day', async (req, res) => {
   logger.debug(`Requesting events for ${req.params.day}`);
   try{

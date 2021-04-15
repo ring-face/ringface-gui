@@ -20,6 +20,7 @@ import { PersonsComponent } from './persons/persons.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponent } from './admin/admin.component';
 import { DownloadWeekComponent } from './admin/download-week/download-week.component';
+import { AllEventsComponent } from './all-events/all-events.component';
 
 
 
@@ -33,7 +34,8 @@ import { DownloadWeekComponent } from './admin/download-week/download-week.compo
     PersonsComponent,
     NavbarComponent,
     AdminComponent,
-    DownloadWeekComponent
+    DownloadWeekComponent,
+    AllEventsComponent
   ],
   imports: [
     BrowserModule,
