@@ -1,6 +1,6 @@
 {
   "name": "ringface",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "license": "MIT",
   "scripts": {
     "bff": "nx serve ringface-bff",
@@ -52,6 +52,7 @@
     "request": "^2.88.2",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
+    "winston": "^3.3.3",
     "zone.js": "^0.10.2"
   },
   "devDependencies": {

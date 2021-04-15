@@ -10,6 +10,8 @@ import { downloadEvents } from './downloader-service';
 import * as  listEndpoints from 'express-list-endpoints';
 import { version } from '../../../../package.json';
 
+import logger from './logger'
+
 export const app = express();
 
 app.use(express.json());
@@ -25,33 +27,33 @@ app.get('/api/trigger-classification', async (req, res) => {
     res.send(data);
   }
   catch (err){
-    console.error(`saving the backend reponse failed`, err);
+    logger.error(`saving the backend reponse failed`, err);
     res.sendStatus(500);
   }
 });
 
 
 app.get('/api/trigger-download-from-ring/:day', async (req, res) => {
-  console.log(`Will download new ring events for ${req.params.day}`);
+  logger.debug(`Will download new ring events for ${req.params.day}`);
 
   try{
     const events = await downloadEvents(req.params.day);
     res.send(events);
   }
   catch (err){
-    console.error(err);
+    logger.error(err);
     res.status(500).send({error: err});
   }
 
 })
 
 app.get('/api/events/:day', async (req, res) => {
-  console.log(`Requesting events for ${req.params.day}`);
+  logger.debug(`Requesting events for ${req.params.day}`);
   try{
     const events =  await database.loadRingEventsForDay(req.params.day);
     res.send(events);
   } catch (err){
-    console.error(err);
+    logger.error(err);
     res.status(500).send({error: err});
   }
 });
@@ -63,12 +65,12 @@ app.post('/api/process-event', async (req, res) => {
   try{
     const event = req.body as RingEvent;
 
-    console.log(`will start recognition on`, event);
+    logger.debug(`will start recognition on`, event);
     const processingResult = await processEvent(event);
     res.send(processingResult);
   }
   catch (err){
-    console.error(`api/process-event failed`, err);
+    logger.error(`api/process-event failed`, err);
     res.status(500).send({error: err});
   }
 });
@@ -76,7 +78,7 @@ app.post('/api/process-event', async (req, res) => {
 
 app.get('/api/images/*', (req, res) => {
   const imagePath = req.path.substring(12);
-  console.log(`getting image ${imagePath}`);
+  logger.debug(`getting image ${imagePath}`);
 
   res.sendFile(imagePath, { root: process.env.DATA_DIR });
 
@@ -87,19 +89,19 @@ app.get('/api/most-recent-fitting/', async (req, res) => {
     res.send(await database.loadLatestClassificationResult());
   }
   catch (err){
-    console.error(err);
+    logger.error(err);
     res.status(500).send({error: err});
   }});
 
 
 app.post('/api/tag-person', async (req, res) => {
     const tagPersonRequest: TagPersonRequest = req.body;
-    console.log('Tagging: ', tagPersonRequest);
+    logger.debug('Tagging: ', tagPersonRequest);
 
     await database.addToPersonImages(tagPersonRequest.newName, tagPersonRequest.unknownPerson.imagePaths)
     await database.updateProcessingResult(tagPersonRequest);
 
-    console.log('Tagging finished: ', tagPersonRequest);
+    logger.debug('Tagging finished: ', tagPersonRequest);
     res.send({message:`Tagged to ${tagPersonRequest.newName}`} as TagPersonResponse);
 
     triggerClassification();
@@ -111,12 +113,12 @@ app.use("/api/videos", express.static(process.env.DATA_DIR + 'data/videos'));
 
 app.get('/api/person-images', async (req, res) => {
   try{
-    console.log('Loading all person images');
+    logger.debug('Loading all person images');
 
     res.send(await database.loadAllPersonImages());
   }
   catch (err){
-    console.error(err);
+    logger.error(err);
     res.status(500).send({error: err});
   }}
 );
@@ -135,13 +137,13 @@ app.get("/api/poll-and-process/today", async (req, res) => {
       downloadAndProcess(todayAsyyyymmdd, todayProgress);
 
 
-      console.log(`Finished the poll cycle for ${todayProgress.startTime}`);
+      logger.debug(`Finished the poll cycle for ${todayProgress.startTime}`);
       res.send(
         todayProgress
       );
     }
     catch (err){
-      console.error(err);
+      logger.error(err);
       res.status(500).send({error: err});
     }
     finally{
@@ -163,7 +165,7 @@ app.get('/api/download-and-process/week', async (req, res) => {
   else {
     weekProgress = {startTime: new Date()};
     try{
-      console.log(`Started the week download at ${weekProgress.startTime}`);
+      logger.debug(`Started the week download at ${weekProgress.startTime}`);
       res.send(
         weekProgress
       );
@@ -179,7 +181,7 @@ app.get('/api/download-and-process/week', async (req, res) => {
       }
     }
     catch (err){
-      console.error(err);
+      logger.error(err);
     }
     finally{
       weekProgress = undefined;
@@ -190,14 +192,14 @@ app.get('/api/download-and-process/week', async (req, res) => {
 
 async function downloadAndProcess(dayAsyyyymmdd:string, progressCollector:DownloadAndProcessProgress){
   progressCollector.processedDay = dayAsyyyymmdd;
-  console.log(`Fetching new events for ${dayAsyyyymmdd}`);
+  logger.debug(`Fetching new events for ${dayAsyyyymmdd}`);
   progressCollector.events = await downloadEvents(dayAsyyyymmdd);
-  console.log(`Downloaded ${progressCollector.events.length}. Will start processing them sequentially`);
+  logger.debug(`Downloaded ${progressCollector.events.length}. Will start processing them sequentially`);
   progressCollector.processingResult = [];
 
   // sync loop to be able to await
   for (let i = 0; i < progressCollector.events.length; i++){
-    console.log(`Will start recognition on`, progressCollector.events[i]);
+    logger.debug(`Will start recognition on`, progressCollector.events[i]);
     progressCollector.processingResult.push(await processEvent(progressCollector.events[i]));
   }
 }
@@ -216,16 +218,16 @@ app.post('/api/ifttt/event', (req, res) => {
   try{
     const event = req.body as IftttEvent;
 
-    console.log(`recieved IFTTT event`, event);
+    logger.debug(`recieved IFTTT event`, event);
     res.sendStatus(200);
 
     processIftttEvent(event);
   }
   catch (err){
-    console.error(`/api/ifttt/event failed`, err);
+    logger.error(`/api/ifttt/event failed`, err);
     res.status(500).send({error: err});
   }
 });
 
-console.log(listEndpoints(app));
-console.log("Version: ", version);
+logger.debug("Endpoints: ", listEndpoints(app));
+logger.debug("Version: ", version);

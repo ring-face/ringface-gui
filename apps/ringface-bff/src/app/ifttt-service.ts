@@ -4,6 +4,7 @@ import { downloadEvents } from './downloader-service'
 import * as moment from 'moment';
 import { processEvent } from './classifier-service';
 import axios from 'axios';
+import logger  from './logger';
 
 
 
@@ -24,13 +25,13 @@ export async function processIftttEvent(event: IftttEvent){
   const eventDate = momentDate.subtract(2,'h').format("YYYYMMDD")
   const { doorbellName } = event;
 
-  console.log(`Will download and process IFTTT event ${expectedEventName} from device ${doorbellName}`);
+  logger.debug(`Will download and process IFTTT event ${expectedEventName} from device ${doorbellName}`);
 
   // loop until new event was downloaded for one minute
   var i = 1;
   function downloadLoop() {
     setTimeout(async function() {
-      console.log(`Attempting download of ${expectedEventName} for the ${i} time`);
+      logger.debug(`Attempting download of ${expectedEventName} for the ${i} time`);
       const newRingEvents = await downloadEvents(eventDate);
       if (newRingEvents.length > 0) {
         processNewEvents(newRingEvents, expectedEventName);
@@ -39,7 +40,7 @@ export async function processIftttEvent(event: IftttEvent){
         if (i < 10) {           //  max 10 times
           downloadLoop();
         } else {
-          console.log("Can not find new event in ring. Giving up.");
+          logger.debug("Can not find new event in ring. Giving up.");
         }
       }
     }, 6000)
@@ -51,13 +52,13 @@ export async function processIftttEvent(event: IftttEvent){
 }
 
 async function processNewEvents(newRingEvents: RingEvent[], expectedEventName:string) {
-  console.log(`downloaded new events ${newRingEvents}`);
+  logger.debug(`downloaded new events ${newRingEvents}`);
 
   // sync loop to be able to await
   for (let i = 0; i < newRingEvents.length; i++){
-    console.log(`Will start recognition on`, newRingEvents[i]);
+    logger.debug(`Will start recognition on`, newRingEvents[i]);
     const processingResult = await processEvent(newRingEvents[i]);
-    console.log("Processing result:" , processingResult);
+    logger.debug("Processing result:" , processingResult);
 
     pushNotificationIfttt(newRingEvents[i], processingResult, expectedEventName)
   }
@@ -65,7 +66,7 @@ async function processNewEvents(newRingEvents: RingEvent[], expectedEventName:st
 
 function pushNotificationIfttt(ringEvent:RingEvent, processingResult: ProcessingResult, expectedEventName: string) {
   if (! process.env.IFTTT_EVENT || ! process.env.IFTTT_KEY){
-    console.error("IFTTT_EVENT and IFTTT_KEY env variables are not defined. Will not push event.");
+    logger.error("IFTTT_EVENT and IFTTT_KEY env variables are not defined. Will not push event.");
     return;
   }
 
@@ -96,11 +97,11 @@ function pushNotificationIfttt(ringEvent:RingEvent, processingResult: Processing
     }
 
 
-    console.log(`Calling URL: ${url} with`, body);
+    logger.debug(`Calling URL: ${url} with`, body);
     axios.post(url, body);
   }
   else {
-    console.warn("will not push old event", processingResult);
+    logger.warn("will not push old event", processingResult);
   }
 }
 
