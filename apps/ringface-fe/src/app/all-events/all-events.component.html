@@ -1,5 +1,18 @@
 <div class="container">
-  <div class="row" *ngFor="let event of ringEvents | async" >
+  <div class="row">
+    <div class="col-3">
+      Search for:
+    </div>
+    <div class="col">
+      <input
+        id="searchQueryId"
+            [(ngModel)]="searchQuery"
+            placeholder="Person name"
+          />
+    </div>
+  </div>
+
+  <div class="row" *ngFor="let event of ringEvents | async | eventsFilter: searchQuery" >
     <div class="col"> {{ event.createdAt | date: 'medium' }}</div>
     <div class="col">
       {{ event.processingResult?.recognisedPersons.join(' ') }}

@@ -11,6 +11,7 @@ import { BffService } from '../services/bff.service';
 })
 export class AllEventsComponent implements OnInit {
   ringEvents: Observable<RingEvent[]>;
+  searchQuery:string;
 
   constructor(private bffService: BffService) {}
 

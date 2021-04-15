@@ -21,6 +21,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AdminComponent } from './admin/admin.component';
 import { DownloadWeekComponent } from './admin/download-week/download-week.component';
 import { AllEventsComponent } from './all-events/all-events.component';
+import { EventsFilterPipe } from './all-events/events-filter';
 
 
 
@@ -35,7 +36,8 @@ import { AllEventsComponent } from './all-events/all-events.component';
     NavbarComponent,
     AdminComponent,
     DownloadWeekComponent,
-    AllEventsComponent
+    AllEventsComponent,
+    EventsFilterPipe
   ],
   imports: [
     BrowserModule,
