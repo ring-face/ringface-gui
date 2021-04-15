@@ -58,6 +58,12 @@ export class DaysEventsComponent implements OnInit {
     this.events = this.bffService.events(this.date);
   }
 
+  onUnknownDeleted(){
+    console.log(`onUnknownDeleted, closing modala and refreshing events for ${this.date}`);
+    this.tagPersonModal.hide();
+    this.events = this.bffService.events(this.date);
+  }
+
   /**
    * ./data/videos/20210322-141301.mp4 -> 20210322-141301.mp4
    */

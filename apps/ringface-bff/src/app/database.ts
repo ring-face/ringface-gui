@@ -104,9 +104,14 @@ export async function updateProcessingResult(tagPersonRequest: TagPersonRequest)
   const processingResult = await db.collection<ProcessingResult>(CollectionName.ProcessingResult).findOne({eventName:tagPersonRequest.eventName});
 
   processingResult.unknownPersons = processingResult.unknownPersons.filter(unknownPerson => unknownPerson.name != tagPersonRequest.unknownPerson.name);
-  if(! processingResult.recognisedPersons.includes(tagPersonRequest.newName)){
-    processingResult.recognisedPersons.push(tagPersonRequest.newName);
+
+  // if new name was specified
+  if (tagPersonRequest.newName){
+    if(! processingResult.recognisedPersons.includes(tagPersonRequest.newName)){
+      processingResult.recognisedPersons.push(tagPersonRequest.newName);
+    }
   }
+
   await db.collection<ProcessingResult>(CollectionName.ProcessingResult).save(processingResult);
   logger.log("updated the ProcessingResult to ", processingResult);
 }

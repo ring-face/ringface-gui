@@ -108,6 +108,18 @@ app.post('/api/tag-person', async (req, res) => {
 
 });
 
+app.post('/api/delete-unknown', async (req, res) => {
+  const tagPersonRequest: TagPersonRequest = req.body;
+  logger.debug('Deleting unknown: ', tagPersonRequest);
+
+  await database.updateProcessingResult(tagPersonRequest);
+
+  logger.debug('Deleting unknown finished: ', tagPersonRequest);
+  res.send({message:`Deleting unknown ${tagPersonRequest.unknownPerson}`} as TagPersonResponse);
+
+
+});
+
 
 app.use("/api/videos", express.static(process.env.DATA_DIR + 'data/videos'));
 

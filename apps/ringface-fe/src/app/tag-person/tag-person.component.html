@@ -16,14 +16,23 @@
             placeholder="{{ unknownPerson.name }}"
           />
         </div>
-        <div class="col">
+        <div class="col-4">
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-primary"
             (click)="onTag(unknownPerson)"
             [disabled] = "unknownPerson.buttonDisabled"
           >
             Tag
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="onDelete(unknownPerson)"
+            [disabled] = "unknownPerson.buttonDisabled"
+          >
+            Del
           </button>
         </div>
       </div>

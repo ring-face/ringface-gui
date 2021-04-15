@@ -41,6 +41,14 @@ export class BffService {
     );
   }
 
+  public deleteUnknown(eventName: string, unknownPerson: UnknownPerson) {
+    const request = {eventName, unknownPerson} as TagPersonRequest;
+    return this.httpClient.post<TagPersonResponse>(`/api/delete-unknown/`, request).pipe(
+      tap(_ => console.log(`deleted ${unknownPerson.name}`)),
+      catchError(this.handleError<TagPersonResponse>())
+    );
+  }
+
   public processEvent(event:RingEvent){
     return this.httpClient.post<ProcessEventResponse>(`/api/process-event`, event)
     .pipe(

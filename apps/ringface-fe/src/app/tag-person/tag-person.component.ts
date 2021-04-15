@@ -46,4 +46,13 @@ export class TagPersonComponent implements OnInit {
     });
   }
 
+  onDelete(unknownPerson: UnknownPerson){
+    console.log(`Unknown person ${unknownPerson.name} will be deleted`);
+    this.bffService.deleteUnknown(this.event.eventName, unknownPerson).subscribe(response => {
+      unknownPerson.buttonDisabled = true;
+      this.parent.onUnknownDeleted();
+    });
+
+  }
+
 }
