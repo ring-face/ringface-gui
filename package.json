@@ -11,6 +11,7 @@
     "nx": "nx",
     "start": "ng serve",
     "build": "ng build",
+    "build:indocker": "ng build --prod --output-path=/app/dist/out",
     "build:bff": "ng build ringface-bff",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",

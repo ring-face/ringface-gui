@@ -4,10 +4,11 @@ WORKDIR /app
 COPY package*.json /app/
 RUN npm install
 COPY ./ /app/
-RUN npm run build -- --output-path=./dist/out
+RUN npm run build:indocker
 
 FROM nginx:mainline-alpine
 COPY --from=build-stage /app/dist/out/ /var/www/html
+RUN ls -al /var/www/html
 COPY ./nginx-conf-http/nginx.conf /etc/nginx/conf.d/default.conf
 
 
