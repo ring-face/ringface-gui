@@ -1,9 +1,9 @@
 {
   "name": "ringface",
-  "version": "0.6.1",
+  "version": "0.8.0",
   "license": "MIT",
-  "engines" : { 
-    "node" : "^12.x"
+  "engines": {
+    "node": "^12.x"
   },
   "scripts": {
     "bff": "nx serve ringface-bff",
