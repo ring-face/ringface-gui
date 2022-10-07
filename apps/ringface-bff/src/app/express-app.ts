@@ -106,6 +106,7 @@ app.get('/api/most-recent-fitting/', async (req, res) => {
 
 
 app.post('/api/tag-person', async (req, res) => {
+  try{
     const tagPersonRequest: TagPersonRequest = req.body;
     logger.debug('Tagging: ', tagPersonRequest);
 
@@ -116,6 +117,11 @@ app.post('/api/tag-person', async (req, res) => {
     res.send({message:`Tagged to ${tagPersonRequest.newName}`} as TagPersonResponse);
 
     triggerClassification();
+  } catch (err){
+    logger.error(err);
+    res.status(500).send({error: err});
+  }
+    
 
 });
 

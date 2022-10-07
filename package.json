@@ -2,6 +2,9 @@
   "name": "ringface",
   "version": "0.6.1",
   "license": "MIT",
+  "engines" : { 
+    "node" : "^12.x"
+  },
   "scripts": {
     "bff": "nx serve ringface-bff",
     "poll-new-events": "while true; do curl localhost:3333/api/poll-and-process/today; sleep 300 ;done",
