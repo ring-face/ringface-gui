@@ -12,9 +12,13 @@ import { version } from '../../../../package.json';
 
 import logger from './logger'
 
+import { gcsProxy } from './express-gcs';
+
 export const app = express();
 
 app.use(express.json());
+
+gcsProxy(app);
 
 
 app.get('/api', (req, res) => {
@@ -87,14 +91,6 @@ app.post('/api/process-event', async (req, res) => {
 });
 
 
-app.get('/api/images/*', (req, res) => {
-  const imagePath = req.path.substring(12);
-  logger.debug(`getting image ${imagePath}`);
-
-  res.sendFile(imagePath, { root: process.env.DATA_DIR });
-
-});
-
 app.get('/api/most-recent-fitting/', async (req, res) => {
   try{
     res.send(await database.loadLatestClassificationResult());
@@ -138,7 +134,6 @@ app.post('/api/delete-unknown', async (req, res) => {
 });
 
 
-app.use("/api/videos", express.static(process.env.DATA_DIR + 'data/videos'));
 
 app.get('/api/person-images', async (req, res) => {
   try{

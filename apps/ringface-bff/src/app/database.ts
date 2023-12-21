@@ -42,7 +42,7 @@ function ensureConstraints(){
 }
 
 function buildMongoUrl(){
-  const dbUrl =  `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/ringfacedb`;
+  const dbUrl =  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/ringfacedb`;
   logger.debug(`will connect to db on ${dbUrl.replace(process.env.MONGO_PASSWORD, 'xxxxx')}`);
   return dbUrl;
 

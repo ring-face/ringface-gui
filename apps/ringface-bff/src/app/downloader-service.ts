@@ -9,7 +9,7 @@ export async function downloadEvents(day:string) {
 
 
   const downloadedEventsRingIds = await (await database.loadRingEventsForDay(day)).map(ringEvent => ringEvent.ringId);
-  const url = `http://${process.env.CONNECTOR_HOST}:5000/connector/download/${day}`;
+  const url = `${process.env.CONNECTOR_HOST}/download-ring-video?dayToDownload=${day}`;
   logger.debug(`Calling URL: ${url}`);
   const backendResponse = await axios.post<RingEvent[]>(url, downloadedEventsRingIds);
   const ringEvents = backendResponse.data;
